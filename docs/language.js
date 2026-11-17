@@ -2,6 +2,7 @@
 
 const marathiCopy = {
   brand: "आई",
+  startCamera: "कॅमेरा सुरू करा",
   info: "माहिती",
   viewerNav: "दृश्य",
   storyNav: "गोष्ट",
@@ -53,6 +54,7 @@ const marathiCopy = {
 
 const localized = {
   en: {
+    cameraLaunch: 'Camera',
     home: 'Aai home',
     mainNav: 'Main',
     languageLabel: 'Site language',
@@ -84,6 +86,7 @@ const localized = {
     cameraFailed: 'Couldn’t start the camera. Showing the illustrated scene.',
   },
   mr: {
+    cameraLaunch: 'कॅमेरा',
     home: 'आईचे मुख्यपृष्ठ',
     mainNav: 'मुख्य दुवे',
     languageLabel: 'साइटची भाषा',

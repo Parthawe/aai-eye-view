@@ -9,7 +9,8 @@ const viewer = document.querySelector('#viewer');
 const fullScreenButton = document.querySelector('#fullscreen');
 const fullScreenLabel = fullScreenButton.querySelector('span');
 const adjustButton = document.querySelector('#viewer-adjust');
-const surroundingPage = document.querySelectorAll('.masthead, .info-panel, .footer');
+const surroundingPage = document.querySelectorAll('.masthead, .camera-launch, .info-panel, .footer');
+const phoneLayout = matchMedia('(max-width: 760px), (pointer: coarse) and (max-width: 1050px)');
 const spotSize = document.querySelector('#spot-size');
 const spotDarkness = document.querySelector('#spot-darkness');
 const spotSizeValue = document.querySelector('#spot-size-value');
@@ -49,6 +50,7 @@ let pending = false;
 let frameId = 0;
 let side, pattern, glasses, darkWidth, spotOpacity;
 let nativeFullscreen = false;
+let launchedFromStart = false;
 const savedControls = [...document.querySelectorAll('input[type=range], input[type=radio]:not([name=stage])')];
 
 function saveSettings() {
@@ -95,9 +97,13 @@ function setExpanded(expanded) {
   if (!expanded) {
     viewer.classList.remove('show-adjustments');
     adjustButton.setAttribute('aria-expanded', 'false');
+    if (launchedFromStart || phoneLayout.matches) stopCamera();
+    launchedFromStart = false;
   }
   updateFullScreenLabel();
-  fullScreenButton.focus({ preventScroll: true });
+  const focusTarget = !expanded && phoneLayout.matches ?
+    document.querySelector('#start-camera') : fullScreenButton;
+  focusTarget.focus({ preventScroll: true });
 }
 
 async function toggleFullScreen() {
@@ -323,6 +329,12 @@ document.querySelector('#privacy-link').addEventListener('click', () => {
   document.querySelector('#privacy').open = true;
 });
 button.addEventListener('click', toggleCamera);
+document.querySelector('#start-camera').addEventListener('click', () => {
+  launchedFromStart = true;
+  // Both permission requests must begin during the same tap.
+  toggleFullScreen();
+  toggleCamera();
+});
 fullScreenButton.addEventListener('click', toggleFullScreen);
 adjustButton.addEventListener('click', () => {
   const open = viewer.classList.toggle('show-adjustments');

@@ -7,9 +7,9 @@
   <meta name="description" content="A tribute to Mom and an interactive illustration of how vision can differ between two eyes.">
   <title>Aai | A view through two eyes</title>
   <link rel="icon" href="./mark.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="./style.css?v=simple">
-  <script src="./language.js?v=simple" defer></script>
-  <script src="./app.js?v=simple" defer></script>
+  <link rel="stylesheet" href="./style.css?v=start">
+  <script src="./language.js?v=start" defer></script>
+  <script src="./app.js?v=start" defer></script>
 </head>
 <body>
   <header class="masthead wrap">
@@ -20,6 +20,12 @@
     </div>
   </header>
   <main class="wrap">
+    <section class="camera-launch" aria-label="Camera" data-label="cameraLaunch">
+      <button id="start-camera" class="viewer-button primary" type="button">
+        <svg width="38" height="30" viewBox="0 0 20 16" fill="none" aria-hidden="true"><rect x="1" y="3" width="12" height="10" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="m13 6 5-2v8l-5-2" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
+        <span data-copy="startCamera">Start camera</span>
+      </button>
+    </section>
     <section class="viewer" id="viewer" aria-labelledby="viewer-title">
       <div class="viewer-heading">
         <h1 id="viewer-title" data-copy="viewerTitle">Through her eyes</h1>
