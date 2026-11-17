@@ -36,8 +36,8 @@ const focusLayers = {
 };
 const stages = [
   { size: 50, darkness: 0 },
-  { size: 26, darkness: 46 },
-  { size: 34, darkness: 91 },
+  { size: 50, darkness: 40 },
+  { size: 50, darkness: 70 },
   { size: 50, darkness: 100 },
 ];
 const scenes = { en: new Image(), mr: new Image() };
@@ -163,10 +163,14 @@ function render() {
 
 function drawDarkArea(ctx) {
   if (pattern === 'edge') {
-    const start = SIZE - 1 - darkWidth * 2;
-    const shade = ctx.createLinearGradient(start, 0, SIZE - 1, 0);
+    const start = SIZE - darkWidth * 2;
+    // At 40%, preserve the former Strong fade. Higher levels reach black sooner.
+    const strength = Math.max(0, (spotOpacity - .4) / .6);
+    const end = SIZE - darkWidth * strength;
+    const opacity = Math.min(1, spotOpacity / .4);
+    const shade = ctx.createLinearGradient(start, 0, end, 0);
     shade.addColorStop(0, 'transparent');
-    shade.addColorStop(1, 'rgba(0, 0, 0,' + spotOpacity + ')');
+    shade.addColorStop(1, 'rgba(0, 0, 0,' + opacity + ')');
     ctx.fillStyle = shade;
     ctx.fillRect(0, 0, SIZE, SIZE);
     return;
