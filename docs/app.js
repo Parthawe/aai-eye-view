@@ -10,6 +10,8 @@ const eyes = ['left', 'right'].map(side => ({
   side,
   canvas: document.getElementById(side),
   label: document.getElementById(side + '-label'),
+  blur: document.getElementById(side + '-blur'),
+  blurLevel: document.getElementById(side + '-blur-level'),
   get ctx() { return this.canvas.getContext('2d', { alpha: false }); },
 }));
 
@@ -20,9 +22,10 @@ function layer(size = SIZE) {
 }
 
 const focusLayers = {
-  left: { off: layer(16), on: layer(22) },
-  right: { off: layer(256), on: layer() },
+  off: [SIZE, 256, 80, 36, 16].map(layer),
+  on: [SIZE, SIZE, 108, 50, 22].map(layer),
 };
+const blurLabels = ['Sharp focus', 'Slight blur', 'Moderate blur', 'Strong blur', 'Heavy blur', 'No scene detail'];
 const centerBlur = layer(64);
 const patch = layer();
 const stages = [
@@ -45,11 +48,15 @@ function update() {
   glasses = document.querySelector('[name=glasses]:checked').value === 'on';
   stageNote.textContent = stages[stage].text;
   for (const eye of eyes) {
-    const hasSpot = eye.side === side && stage !== 0;
-    const detail = eye.side === 'left' ? 'Heavy blur' : 'Clearer detail';
+    const level = eye.blur.valueAsNumber;
+    const detail = blurLabels[level];
+    const hasSpot = eye.side === side && stage !== 0 && level !== 5;
     const label = hasSpot ? detail + ' + dark spot' : detail;
+    eye.blurLevel.value = level + ' / 5';
+    eye.blur.setAttribute('aria-valuetext', level + ' of 5, ' + detail);
     eye.label.textContent = label;
     eye.label.classList.toggle('affected', hasSpot);
+    eye.canvas.toggleAttribute('data-blank', level === 5);
     eye.canvas.setAttribute('aria-label', (eye.side === 'left' ? 'Left' : 'Right') +
       ' eye: ' + label + '. Glasses ' + (glasses ? 'on.' : 'off.'));
     eye.canvas.removeAttribute('aria-labelledby');
@@ -70,42 +77,45 @@ function render() {
   const height = live ? video.videoHeight : scene.naturalHeight;
   if (!width || !height) return;
 
-  const setting = glasses ? 'on' : 'off';
-  const left = focusLayers.left[setting];
-  const right = focusLayers.right[setting];
-  drawSquare(left, source, width, height);
-  drawSquare(right, source, width, height);
-
-  if (stage) {
-    const { radius, core } = stages[stage];
-    const center = SIZE / 2;
-    const spotSource = side === 'left' ? left : right;
-    centerBlur.ctx.drawImage(spotSource.canvas, 0, 0, centerBlur.canvas.width, centerBlur.canvas.height);
-    const ctx = patch.ctx;
-    ctx.clearRect(0, 0, SIZE, SIZE);
-    ctx.drawImage(centerBlur.canvas, 0, 0, SIZE, SIZE);
-    ctx.globalCompositeOperation = 'destination-in';
-    let gradient = ctx.createRadialGradient(center, center, 0, center, center, radius * 1.28);
-    gradient.addColorStop(0, 'white');
-    gradient.addColorStop(.39, 'white');
-    gradient.addColorStop(1, 'transparent');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, SIZE, SIZE);
-    ctx.globalCompositeOperation = 'source-over';
-
-    gradient = ctx.createRadialGradient(center, center, 0, center, center, radius);
-    gradient.addColorStop(0, 'rgba(24, 21, 18,' + core + ')');
-    gradient.addColorStop(.3, 'rgba(30, 25, 21,' + core * .8 + ')');
-    gradient.addColorStop(1, 'rgba(36, 30, 24, 0)');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, SIZE, SIZE);
-  }
-
+  const layers = focusLayers[glasses ? 'on' : 'off'];
+  let previousBase;
   for (const eye of eyes) {
-    const base = eye.side === 'left' ? left : right;
+    const base = layers[eye.blur.valueAsNumber];
+    if (!base) {
+      eye.ctx.fillStyle = '#000';
+      eye.ctx.fillRect(0, 0, SIZE, SIZE);
+      continue;
+    }
+    if (base !== previousBase) drawSquare(base, source, width, height);
+    previousBase = base;
     eye.ctx.drawImage(base.canvas, 0, 0, SIZE, SIZE);
-    if (stage && eye.side === side) eye.ctx.drawImage(patch.canvas, 0, 0);
+    if (stage && eye.side === side) drawSpot(eye.ctx, base.canvas);
   }
+}
+
+function drawSpot(output, base) {
+  const { radius, core } = stages[stage];
+  const center = SIZE / 2;
+  centerBlur.ctx.drawImage(base, 0, 0, centerBlur.canvas.width, centerBlur.canvas.height);
+  const ctx = patch.ctx;
+  ctx.clearRect(0, 0, SIZE, SIZE);
+  ctx.drawImage(centerBlur.canvas, 0, 0, SIZE, SIZE);
+  ctx.globalCompositeOperation = 'destination-in';
+  let gradient = ctx.createRadialGradient(center, center, 0, center, center, radius * 1.28);
+  gradient.addColorStop(0, 'white');
+  gradient.addColorStop(.39, 'white');
+  gradient.addColorStop(1, 'transparent');
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, SIZE, SIZE);
+  ctx.globalCompositeOperation = 'source-over';
+
+  gradient = ctx.createRadialGradient(center, center, 0, center, center, radius);
+  gradient.addColorStop(0, 'rgba(24, 21, 18,' + core + ')');
+  gradient.addColorStop(.3, 'rgba(30, 25, 21,' + core * .8 + ')');
+  gradient.addColorStop(1, 'rgba(36, 30, 24, 0)');
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, SIZE, SIZE);
+  output.drawImage(patch.canvas, 0, 0);
 }
 
 function cancelFrame() {
@@ -187,6 +197,7 @@ scene.onerror = () => {
 scene.src = './scene.svg';
 
 document.querySelector('.controls').addEventListener('change', update);
+for (const eye of eyes) eye.blur.addEventListener('input', update);
 document.querySelector('#privacy-link').addEventListener('click', () => {
   document.querySelector('#privacy').open = true;
 });
