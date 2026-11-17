@@ -90,6 +90,15 @@ function updateFullScreenLabel() {
   fullScreenButton.setAttribute('aria-pressed', String(expanded));
 }
 
+function setControlsHidden(hidden) {
+  viewer.classList.toggle('controls-hidden', hidden);
+  if (hidden) {
+    viewer.classList.remove('show-adjustments');
+    adjustButton.setAttribute('aria-expanded', 'false');
+    eyes[0].canvas.focus({ preventScroll: true });
+  }
+}
+
 function setExpanded(expanded) {
   viewer.classList.toggle('is-expanded', expanded);
   document.body.classList.toggle('viewer-expanded', expanded);
@@ -104,6 +113,7 @@ function setExpanded(expanded) {
   const focusTarget = !expanded && phoneLayout.matches ?
     document.querySelector('#start-camera') : fullScreenButton;
   focusTarget.focus({ preventScroll: true });
+  setControlsHidden(expanded && !!camera && !pending);
 }
 
 async function toggleFullScreen() {
@@ -242,6 +252,7 @@ function illustrationStatus() {
 }
 
 function stopCamera(message = illustrationStatus()) {
+  setControlsHidden(false);
   request++;
   pending = false;
   cancelFrame();
@@ -283,6 +294,7 @@ async function toggleCamera() {
     pending = false;
     showCameraStatus('liveCamera', 'stopCamera');
     tick();
+    setControlsHidden(viewer.classList.contains('is-expanded'));
   } catch (error) {
     if (attempt !== request) return;
     const messages = {
@@ -328,7 +340,10 @@ document.querySelector('#privacy-link').addEventListener('click', () => {
   document.querySelector('#story').open = true;
   document.querySelector('#privacy').open = true;
 });
-button.addEventListener('click', toggleCamera);
+button.addEventListener('click', () => {
+  if (!camera && !pending && !viewer.classList.contains('is-expanded')) toggleFullScreen();
+  toggleCamera();
+});
 document.querySelector('#start-camera').addEventListener('click', () => {
   launchedFromStart = true;
   // Both permission requests must begin during the same tap.
@@ -336,6 +351,21 @@ document.querySelector('#start-camera').addEventListener('click', () => {
   toggleCamera();
 });
 fullScreenButton.addEventListener('click', toggleFullScreen);
+viewer.addEventListener('click', event => {
+  if (!camera || !viewer.classList.contains('is-expanded')) return;
+  if (event.target.closest('button, input, label, a, summary, .viewer-heading, .range-control, .controls, .quick-presets')) return;
+  setControlsHidden(!viewer.classList.contains('controls-hidden'));
+});
+for (const eye of eyes) {
+  eye.canvas.tabIndex = 0;
+  eye.canvas.addEventListener('keydown', event => {
+    if ((event.key === 'Enter' || event.key === ' ') && camera && viewer.classList.contains('is-expanded')) {
+      event.preventDefault();
+      setControlsHidden(!viewer.classList.contains('controls-hidden'));
+      if (!viewer.classList.contains('controls-hidden')) fullScreenButton.focus({ preventScroll: true });
+    }
+  });
+}
 adjustButton.addEventListener('click', () => {
   const open = viewer.classList.toggle('show-adjustments');
   adjustButton.setAttribute('aria-expanded', String(open));

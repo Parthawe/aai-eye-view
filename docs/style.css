@@ -348,3 +348,21 @@ body.viewer-expanded { overflow: hidden; }
   body:not(.viewer-expanded) :is(.viewer, .info-panel, .footer) { display: none; }
   body.viewer-expanded .camera-launch { display: none; }
 }
+
+.viewer.is-expanded.controls-hidden {
+  padding: 0;
+  overflow: hidden;
+  background: #000;
+  justify-content: center;
+}
+.is-expanded.controls-hidden > :not(.eyes) { display: none; }
+.is-expanded.controls-hidden .eyes {
+  width: min(100%, calc(200dvh + 8px));
+  margin: 0 auto;
+  gap: 8px;
+}
+.is-expanded.controls-hidden .eyes figcaption,
+.is-expanded.controls-hidden .eyes .range-control,
+.is-expanded.controls-hidden .reticle { display: none; }
+.is-expanded.controls-hidden .eye-frame { border: 0; }
+.is-expanded .eye-frame { cursor: pointer; }
