@@ -51,6 +51,9 @@ let frameId = 0;
 let side, pattern, glasses, darkWidth, spotOpacity;
 let nativeFullscreen = false;
 let launchedFromStart = false;
+let controlsHideTimer;
+let adjustingWithPointer = false;
+const CONTROLS_IDLE_MS = 5000;
 const savedControls = [...document.querySelectorAll('input[type=range], input[type=radio]:not([name=stage])')];
 
 function saveSettings() {
@@ -90,12 +93,23 @@ function updateFullScreenLabel() {
   fullScreenButton.setAttribute('aria-pressed', String(expanded));
 }
 
+function restartControlsTimer() {
+  clearTimeout(controlsHideTimer);
+  if (adjustingWithPointer || !camera || pending ||
+      !viewer.classList.contains('is-expanded') ||
+      viewer.classList.contains('controls-hidden')) return;
+  controlsHideTimer = setTimeout(() => setControlsHidden(true), CONTROLS_IDLE_MS);
+}
+
 function setControlsHidden(hidden) {
+  clearTimeout(controlsHideTimer);
   viewer.classList.toggle('controls-hidden', hidden);
   if (hidden) {
     viewer.classList.remove('show-adjustments');
     adjustButton.setAttribute('aria-expanded', 'false');
     eyes[0].canvas.focus({ preventScroll: true });
+  } else {
+    restartControlsTimer();
   }
 }
 
@@ -252,12 +266,12 @@ function illustrationStatus() {
 }
 
 function stopCamera(message = illustrationStatus()) {
-  setControlsHidden(false);
   request++;
   pending = false;
   cancelFrame();
   camera?.getTracks().forEach(track => track.stop());
   camera = null;
+  setControlsHidden(false);
   video.srcObject = null;
   showCameraStatus(message, 'useCamera');
   render();
@@ -351,6 +365,19 @@ document.querySelector('#start-camera').addEventListener('click', () => {
   toggleCamera();
 });
 fullScreenButton.addEventListener('click', toggleFullScreen);
+viewer.addEventListener('pointerdown', () => {
+  adjustingWithPointer = true;
+  clearTimeout(controlsHideTimer);
+});
+for (const eventName of ['pointerup', 'pointercancel']) {
+  window.addEventListener(eventName, () => {
+    adjustingWithPointer = false;
+    restartControlsTimer();
+  });
+}
+for (const eventName of ['click', 'input', 'keydown', 'keyup']) {
+  viewer.addEventListener(eventName, restartControlsTimer);
+}
 viewer.addEventListener('click', event => {
   if (!camera || !viewer.classList.contains('is-expanded')) return;
   if (event.target.closest('button, input, label, a, summary, .viewer-heading, .range-control, .controls, .quick-presets')) return;
