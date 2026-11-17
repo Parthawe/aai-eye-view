@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f3eee4">
+  <meta name="description" content="A tribute to Mom and an interactive illustration of a change in central vision.">
+  <title>Aai | A view through two eyes</title>
+  <link rel="icon" href="./mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./style.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <header class="masthead wrap">
+    <a class="wordmark" href="#" aria-label="Aai home"><img src="./mark.svg" width="36" height="24" alt=""> Aai</a>
+    <nav aria-label="Main"><a href="#viewer">The viewer</a><a href="#story">The story</a></nav>
+  </header>
+  <main class="wrap">
+    <section class="intro" aria-labelledby="title">
+      <div>
+        <p class="eyebrow">A tribute to Mom</p>
+        <h1 id="title">A view through<br><em>two eyes.</em></h1>
+      </div>
+      <p class="dek">What happens when the middle of a familiar scene becomes harder to see? Look at the same scene through two different views.</p>
+    </section>
+    <section class="viewer" id="viewer" aria-labelledby="viewer-title">
+      <div class="viewer-heading">
+        <div><p class="eyebrow section-index">01 / The viewer</p><h2 id="viewer-title">One scene, side by side</h2></div>
+        <button id="camera" class="camera" type="button" aria-describedby="camera-note">
+          <svg width="19" height="16" viewBox="0 0 20 16" fill="none" aria-hidden="true"><rect x="1" y="3" width="12" height="10" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="m13 6 5-2v8l-5-2" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+          <span>Use my camera</span>
+        </button>
+      </div>
+      <div class="eyes">
+        <figure>
+          <figcaption><strong>Left eye</strong><span id="left-label">Reference view</span></figcaption>
+          <div class="eye-frame"><canvas id="left" width="640" height="640" aria-labelledby="left-label" role="img"></canvas><i class="reticle" aria-hidden="true"></i></div>
+        </figure>
+        <figure>
+          <figcaption><strong>Right eye</strong><span id="right-label" class="affected">Illustrated change</span></figcaption>
+          <div class="eye-frame"><canvas id="right" width="640" height="640" aria-labelledby="right-label" role="img"></canvas><i class="reticle" aria-hidden="true"></i></div>
+        </figure>
+      </div>
+      <div class="under-views">
+        <p id="camera-status" role="status">Illustrated scene</p>
+        <p id="camera-note">Camera is optional. Video stays in this tab.</p>
+      </div>
+      <div class="controls">
+        <fieldset>
+          <legend>Affected side</legend>
+          <div class="segments">
+            <label><input type="radio" name="side" value="left"><span>Left eye</span></label>
+            <label><input type="radio" name="side" value="right" checked><span>Right eye</span></label>
+          </div>
+          <p>Choose either eye for this example.</p>
+        </fieldset>
+        <fieldset class="progression">
+          <legend>Illustrative progression</legend>
+          <div class="segments">
+            <label><input type="radio" name="stage" value="0"><span>None</span></label>
+            <label><input type="radio" name="stage" value="1"><span>Subtle</span></label>
+            <label><input type="radio" name="stage" value="2" checked><span>Noticeable</span></label>
+            <label><input type="radio" name="stage" value="3"><span>Stronger</span></label>
+          </div>
+          <p id="stage-note">A dark patch and blur soften details in the middle.</p>
+        </fieldset>
+        <fieldset>
+          <legend>Glasses</legend>
+          <div class="segments">
+            <label><input type="radio" name="glasses" value="off" checked><span>Off</span></label>
+            <label><input type="radio" name="glasses" value="on"><span>On</span></label>
+          </div>
+          <p>Compare added focus blur with and without correction.</p>
+        </fieldset>
+      </div>
+      <p class="view-note">These are separate illustrations of each eye, not a prediction or a reconstruction of anyone’s sight. The stages show different effect strengths, not a timeline.</p>
+      <video id="video" muted playsinline hidden></video>
+    </section>
+
+    <section id="story" class="story" aria-labelledby="story-title">
+      <div><p class="eyebrow section-index">02 / The story</p><h2 id="story-title">For Mom</h2></div>
+      <div class="story-text">
+        <p class="letter">I made this because I wanted to understand what you meant when you described a dark spot in the middle of what you see. It’s a way for us to look at something together and talk about what feels familiar.</p>
+        <details open>
+          <summary>What is the viewer showing?</summary>
+          <p>A blind spot in the middle of the visual field is called a central scotoma. A change in central vision can make it harder to read a word or make out a face you’re looking straight at. The patch is fixed at the center of each image to illustrate that idea; this page doesn’t track where you look. <a href="https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/low-vision">National Eye Institute: Low vision</a></p>
+        </details>
+        <details>
+          <summary>What do glasses change?</summary>
+          <p>Glasses can correct blur caused by the eye not focusing light properly. Here, switching glasses on removes an added focus blur from both views. The illustrated central patch stays in place. The toggle doesn’t model a prescription. <a href="https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/refractive-errors">National Eye Institute: Refractive errors</a></p>
+        </details>
+        <details>
+          <summary>How do we find out if vision has changed?</summary>
+          <p>Ask the eye clinic what diagnosis they recorded, which eye is affected, what the injections are treating, and whether vision or exam findings have changed across visits. Ask what to do if redness and worse vision occur together, particularly after an injection. The viewer can’t answer those questions.</p>
+        </details>
+        <details id="privacy">
+          <summary>Camera and privacy</summary>
+          <p>Camera access starts only when you press the camera button and grant permission. The site processes frames in this tab, doesn’t record or upload them, and never requests the microphone. Use “Stop camera” to go back to the illustrated scene.</p>
+        </details>
+      </div>
+    </section>
+  </main>
+  <footer class="wrap footer"><span>Aai · For Mom</span><a href="#privacy" id="privacy-link">Camera and privacy</a></footer>
+  <noscript><p class="wrap">Enable JavaScript to use the side-by-side viewer.</p></noscript>
+</body>
+</html>
