@@ -5,7 +5,11 @@ const status = document.querySelector('#camera-status');
 const button = document.querySelector('#camera');
 const buttonText = button.querySelector('span');
 const video = document.querySelector('#video');
-const stageNote = document.querySelector('#stage-note');
+const spotSize = document.querySelector('#spot-size');
+const spotDarkness = document.querySelector('#spot-darkness');
+const spotSizeValue = document.querySelector('#spot-size-value');
+const spotDarknessValue = document.querySelector('#spot-darkness-value');
+const stageInputs = document.querySelectorAll('[name=stage]');
 const eyes = ['left', 'right'].map(side => ({
   side,
   canvas: document.getElementById(side),
@@ -26,13 +30,11 @@ const focusLayers = {
   on: [SIZE, SIZE, 108, 50, 22].map(layer),
 };
 const blurLabels = ['Sharp focus', 'Slight blur', 'Moderate blur', 'Strong blur', 'Heavy blur', 'No scene detail'];
-const centerBlur = layer(64);
-const patch = layer();
 const stages = [
-  { text: 'The spot is off. You can compare the blur on its own.' },
-  { text: 'A small, faint patch softens details in the middle.', radius: 84, core: .46 },
-  { text: 'A dark spot hides details in the middle.', radius: 110, core: .91 },
-  { text: 'A larger, darker patch obscures more of the middle.', radius: 194, core: .94 },
+  { size: 34, darkness: 0 },
+  { size: 26, darkness: 46 },
+  { size: 34, darkness: 91 },
+  { size: 61, darkness: 94 },
 ];
 const scene = new Image();
 let sceneFailed = false;
@@ -40,17 +42,27 @@ let camera = null;
 let request = 0;
 let pending = false;
 let frameId = 0;
-let side, stage, glasses;
+let side, glasses, spotRadius, spotOpacity;
 
 function update() {
   side = document.querySelector('[name=side]:checked').value;
-  stage = Number(document.querySelector('[name=stage]:checked').value);
   glasses = document.querySelector('[name=glasses]:checked').value === 'on';
-  stageNote.textContent = stages[stage].text;
+  const size = spotSize.valueAsNumber;
+  const darkness = spotDarkness.valueAsNumber;
+  spotRadius = (size / 100) * SIZE / 2;
+  spotOpacity = darkness / 100;
+  spotSizeValue.value = size + '%';
+  spotDarknessValue.value = darkness + '%';
+  spotSize.setAttribute('aria-valuetext', size + '% of the view width');
+  spotDarkness.setAttribute('aria-valuetext', darkness + '% darkness');
+  for (const input of stageInputs) {
+    const preset = stages[Number(input.value)];
+    input.checked = preset.size === size && preset.darkness === darkness;
+  }
   for (const eye of eyes) {
     const level = eye.blur.valueAsNumber;
     const detail = blurLabels[level];
-    const hasSpot = eye.side === side && stage !== 0 && level !== 5;
+    const hasSpot = eye.side === side && spotRadius > 0 && spotOpacity > 0 && level !== 5;
     const label = hasSpot ? detail + ' + dark spot' : detail;
     eye.blurLevel.value = level + ' / 5';
     eye.blur.setAttribute('aria-valuetext', level + ' of 5, ' + detail);
@@ -89,33 +101,18 @@ function render() {
     if (base !== previousBase) drawSquare(base, source, width, height);
     previousBase = base;
     eye.ctx.drawImage(base.canvas, 0, 0, SIZE, SIZE);
-    if (stage && eye.side === side) drawSpot(eye.ctx, base.canvas);
+    if (eye.side === side && spotRadius > 0 && spotOpacity > 0) drawSpot(eye.ctx);
   }
 }
 
-function drawSpot(output, base) {
-  const { radius, core } = stages[stage];
+function drawSpot(ctx) {
   const center = SIZE / 2;
-  centerBlur.ctx.drawImage(base, 0, 0, centerBlur.canvas.width, centerBlur.canvas.height);
-  const ctx = patch.ctx;
-  ctx.clearRect(0, 0, SIZE, SIZE);
-  ctx.drawImage(centerBlur.canvas, 0, 0, SIZE, SIZE);
-  ctx.globalCompositeOperation = 'destination-in';
-  let gradient = ctx.createRadialGradient(center, center, 0, center, center, radius * 1.28);
-  gradient.addColorStop(0, 'white');
-  gradient.addColorStop(.39, 'white');
+  const gradient = ctx.createRadialGradient(center, center, 0, center, center, spotRadius);
+  gradient.addColorStop(.12, 'rgba(0, 0, 0,' + spotOpacity + ')');
+  gradient.addColorStop(.45, 'rgba(0, 0, 0,' + spotOpacity * .67 + ')');
   gradient.addColorStop(1, 'transparent');
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, SIZE, SIZE);
-  ctx.globalCompositeOperation = 'source-over';
-
-  gradient = ctx.createRadialGradient(center, center, 0, center, center, radius);
-  gradient.addColorStop(0, 'rgba(24, 21, 18,' + core + ')');
-  gradient.addColorStop(.3, 'rgba(30, 25, 21,' + core * .8 + ')');
-  gradient.addColorStop(1, 'rgba(36, 30, 24, 0)');
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, SIZE, SIZE);
-  output.drawImage(patch.canvas, 0, 0);
 }
 
 function cancelFrame() {
@@ -196,7 +193,16 @@ scene.onerror = () => {
 };
 scene.src = './scene.svg';
 
-document.querySelector('.controls').addEventListener('change', update);
+document.querySelector('.controls').addEventListener('change', event => {
+  if (event.target.name === 'stage') {
+    const preset = stages[Number(event.target.value)];
+    spotSize.value = preset.size;
+    spotDarkness.value = preset.darkness;
+  }
+  update();
+});
+spotSize.addEventListener('input', update);
+spotDarkness.addEventListener('input', update);
 for (const eye of eyes) eye.blur.addEventListener('input', update);
 document.querySelector('#privacy-link').addEventListener('click', () => {
   document.querySelector('#privacy').open = true;

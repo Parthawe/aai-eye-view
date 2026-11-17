@@ -7,8 +7,8 @@
   <meta name="description" content="A tribute to Mom and an interactive illustration of a change in central vision.">
   <title>Aai | A view through two eyes</title>
   <link rel="icon" href="./mark.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="./style.css?v=blur">
-  <script src="./app.js?v=blur" defer></script>
+  <link rel="stylesheet" href="./style.css?v=spot">
+  <script src="./app.js?v=spot" defer></script>
 </head>
 <body>
   <header class="masthead wrap">
@@ -35,25 +35,37 @@
         <figure>
           <figcaption><strong>Left eye</strong><span id="left-label">Heavy blur</span></figcaption>
           <div class="eye-frame"><canvas id="left" width="640" height="640" aria-labelledby="left-label" role="img"></canvas><i class="reticle" aria-hidden="true"></i></div>
-          <div class="blur-control">
-            <div class="blur-heading"><label for="left-blur">Left eye blur</label><output id="left-blur-level" for="left-blur">4 / 5</output></div>
+          <div class="range-control">
+            <div class="range-heading"><label for="left-blur">Left eye blur</label><output id="left-blur-level" for="left-blur">4 / 5</output></div>
             <input id="left-blur" type="range" min="0" max="5" step="1" value="4">
-            <div class="blur-scale" aria-hidden="true"><span>0 Sharp</span><span>5 No detail</span></div>
+            <div class="range-scale" aria-hidden="true"><span>0 Sharp</span><span>5 No detail</span></div>
           </div>
         </figure>
         <figure>
           <figcaption><strong>Right eye</strong><span id="right-label" class="affected">Slight blur + dark spot</span></figcaption>
           <div class="eye-frame"><canvas id="right" width="640" height="640" aria-labelledby="right-label" role="img"></canvas><i class="reticle" aria-hidden="true"></i></div>
-          <div class="blur-control">
-            <div class="blur-heading"><label for="right-blur">Right eye blur</label><output id="right-blur-level" for="right-blur">1 / 5</output></div>
+          <div class="range-control">
+            <div class="range-heading"><label for="right-blur">Right eye blur</label><output id="right-blur-level" for="right-blur">1 / 5</output></div>
             <input id="right-blur" type="range" min="0" max="5" step="1" value="1">
-            <div class="blur-scale" aria-hidden="true"><span>0 Sharp</span><span>5 No detail</span></div>
+            <div class="range-scale" aria-hidden="true"><span>0 Sharp</span><span>5 No detail</span></div>
           </div>
         </figure>
       </div>
       <div class="under-views">
         <p id="camera-status" role="status">Illustrated scene</p>
         <p id="camera-note">Camera is optional. Video stays in this tab.</p>
+      </div>
+      <div class="spot-adjustments">
+        <div class="range-control">
+          <div class="range-heading"><label for="spot-size">Spot size</label><output id="spot-size-value" for="spot-size">34%</output></div>
+          <input id="spot-size" type="range" min="0" max="100" step="1" value="34">
+          <div class="range-scale" aria-hidden="true"><span>0% Hidden</span><span>100% Full width</span></div>
+        </div>
+        <div class="range-control">
+          <div class="range-heading"><label for="spot-darkness">Spot darkness</label><output id="spot-darkness-value" for="spot-darkness">91%</output></div>
+          <input id="spot-darkness" type="range" min="0" max="100" step="1" value="91">
+          <div class="range-scale" aria-hidden="true"><span>0% Clear</span><span>100% Black center</span></div>
+        </div>
       </div>
       <div class="controls">
         <fieldset>
@@ -71,7 +83,6 @@
             <label><input type="radio" name="stage" value="2" checked><span>Noticeable</span></label>
             <label><input type="radio" name="stage" value="3"><span>Stronger</span></label>
           </div>
-          <p id="stage-note">A dark spot hides details in the middle.</p>
         </fieldset>
         <fieldset>
           <legend>Glasses</legend>

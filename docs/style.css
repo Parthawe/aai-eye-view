@@ -31,12 +31,12 @@ figcaption strong{color:var(--ink);font-size:14px;font-weight:650}
 figcaption .affected{color:var(--rust)}
 .eye-frame{width:100%;aspect-ratio:1;position:relative;overflow:hidden;border:1px solid #8f826d;background:#ded2b8}
 canvas{width:100%;height:100%;display:block}
-.blur-control{padding:9px 0 3px;color:var(--muted);font-size:12px}
-.blur-heading,.blur-scale{display:flex;justify-content:space-between;align-items:baseline;gap:4px}
-.blur-heading label{font-weight:650;color:var(--ink)}
-.blur-heading output{font-variant-numeric:tabular-nums;white-space:nowrap}
-.blur-control input{width:100%;height:32px;display:block;margin:0;accent-color:var(--rust);cursor:pointer}
-.blur-scale{font-size:11px}
+.range-control{padding:9px 0 3px;color:var(--muted);font-size:12px}
+.range-heading,.range-scale{display:flex;justify-content:space-between;align-items:baseline;gap:4px}
+.range-heading label{font-weight:650;color:var(--ink)}
+.range-heading output{font-variant-numeric:tabular-nums;white-space:nowrap}
+.range-control input{width:100%;height:32px;display:block;margin:0;accent-color:var(--rust);cursor:pointer}
+.range-scale{font-size:11px}
 canvas[data-blank]+.reticle{display:none}
 .reticle{position:absolute;inset:8px;pointer-events:none;background:
 linear-gradient(#f7eddb,#f7eddb) left top/13px 1px,linear-gradient(#f7eddb,#f7eddb) left top/1px 13px,
@@ -45,6 +45,7 @@ linear-gradient(#f7eddb,#f7eddb) left bottom/13px 1px,linear-gradient(#f7eddb,#f
 linear-gradient(#f7eddb,#f7eddb) right bottom/13px 1px,linear-gradient(#f7eddb,#f7eddb) right bottom/1px 13px;background-repeat:no-repeat;opacity:.75}
 .under-views{display:flex;justify-content:space-between;gap:14px;color:var(--muted);font-size:12px;padding:9px 0 12px;border-bottom:1px solid var(--rule)}
 #camera-status{color:var(--rust)}
+.spot-adjustments{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;padding:6px 0 10px;border-bottom:1px solid var(--rule)}
 .controls{display:grid;grid-template-columns:1fr 1.8fr 1fr;gap:22px;padding:18px 0 12px}
 fieldset{border:0;padding:0;margin:0;min-width:0}
 legend{padding:0;margin-bottom:7px;font-weight:650;font-size:13px}
