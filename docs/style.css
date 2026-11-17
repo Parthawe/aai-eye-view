@@ -200,7 +200,7 @@ canvas[data-blank] + .reticle { display: none; }
 
 #camera-status { color: var(--rust); }
 .spot-adjustments { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gutter); padding: 6px 0 10px; border-bottom: 1px solid var(--rule); }
-.controls { display: grid; grid-template-columns: 1fr 1.6fr 1fr; gap: 18px; padding: 15px 0 12px; }
+.controls { display: grid; grid-template-columns: 1fr 1.15fr 1.45fr .85fr; gap: 18px; padding: 15px 0 12px; }
 fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
 legend { padding: 0; margin-bottom: 6px; font-weight: 700; font-size: 15px; }
 

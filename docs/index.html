@@ -4,12 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#f7efe3">
-  <meta name="description" content="A tribute to Mom and an interactive illustration of a change in central vision.">
+  <meta name="description" content="A tribute to Mom and an interactive illustration of how vision can differ between two eyes.">
   <title>Aai | A view through two eyes</title>
   <link rel="icon" href="./mark.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="./style.css?v=phone">
-  <script src="./language.js?v=phone" defer></script>
-  <script src="./app.js?v=phone" defer></script>
+  <link rel="stylesheet" href="./style.css?v=field">
+  <script src="./language.js?v=field" defer></script>
+  <script src="./app.js?v=field" defer></script>
 </head>
 <body>
   <header class="masthead wrap">
@@ -43,16 +43,16 @@
       </p>
       <div class="eyes">
         <figure>
-          <figcaption><strong data-copy="leftEye">Left eye</strong><span id="left-label">Heavy blur</span></figcaption>
+          <figcaption><strong data-copy="leftEye">Left eye</strong><span id="left-label" class="affected">Right side dark</span></figcaption>
           <div class="eye-frame"><canvas id="left" width="640" height="640" aria-labelledby="left-label" role="img"></canvas><i class="reticle" aria-hidden="true"></i></div>
           <div class="range-control">
-            <div class="range-heading"><label for="left-blur" data-copy="leftBlur">Left eye blur</label><output id="left-blur-level" for="left-blur">4 / 5</output></div>
-            <input id="left-blur" type="range" min="0" max="5" step="1" value="4">
+            <div class="range-heading"><label for="left-blur" data-copy="leftBlur">Left eye blur</label><output id="left-blur-level" for="left-blur">2 / 5</output></div>
+            <input id="left-blur" type="range" min="0" max="5" step="1" value="2">
             <div class="range-scale" aria-hidden="true"><span data-copy="blurMin">0 Sharp</span><span data-copy="blurMax">5 No detail</span></div>
           </div>
         </figure>
         <figure>
-          <figcaption><strong data-copy="rightEye">Right eye</strong><span id="right-label" class="affected">Slight blur + dark spot</span></figcaption>
+          <figcaption><strong data-copy="rightEye">Right eye</strong><span id="right-label">Slight blur</span></figcaption>
           <div class="eye-frame"><canvas id="right" width="640" height="640" aria-labelledby="right-label" role="img"></canvas><i class="reticle" aria-hidden="true"></i></div>
           <div class="range-control">
             <div class="range-heading"><label for="right-blur" data-copy="rightBlur">Right eye blur</label><output id="right-blur-level" for="right-blur">1 / 5</output></div>
@@ -67,31 +67,38 @@
       </div>
       <div class="spot-adjustments">
         <div class="range-control">
-          <div class="range-heading"><label for="spot-size" data-copy="spotSize">Spot size</label><output id="spot-size-value" for="spot-size">34%</output></div>
-          <input id="spot-size" type="range" min="0" max="100" step="1" value="34">
+          <div class="range-heading"><label for="spot-size" data-copy="spotSize">Dark area width</label><output id="spot-size-value" for="spot-size">50%</output></div>
+          <input id="spot-size" type="range" min="0" max="100" step="1" value="50">
           <div class="range-scale" aria-hidden="true"><span data-copy="spotSizeMin">0% Hidden</span><span data-copy="spotSizeMax">100% Full width</span></div>
         </div>
         <div class="range-control">
-          <div class="range-heading"><label for="spot-darkness" data-copy="spotDarkness">Spot darkness</label><output id="spot-darkness-value" for="spot-darkness">91%</output></div>
-          <input id="spot-darkness" type="range" min="0" max="100" step="1" value="91">
-          <div class="range-scale" aria-hidden="true"><span data-copy="spotDarknessMin">0% Clear</span><span data-copy="spotDarknessMax">100% Black center</span></div>
+          <div class="range-heading"><label for="spot-darkness" data-copy="spotDarkness">Darkness</label><output id="spot-darkness-value" for="spot-darkness">100%</output></div>
+          <input id="spot-darkness" type="range" min="0" max="100" step="1" value="100">
+          <div class="range-scale" aria-hidden="true"><span data-copy="spotDarknessMin">0% Clear</span><span data-copy="spotDarknessMax">100% Black</span></div>
         </div>
       </div>
       <div class="controls">
         <fieldset>
-          <legend data-copy="spotSide">Dark spot side</legend>
+          <legend data-copy="spotSide">Eye with the dark area</legend>
           <div class="segments">
-            <label><input type="radio" name="side" value="left"><span data-copy="leftEye">Left eye</span></label>
-            <label><input type="radio" name="side" value="right" checked><span data-copy="rightEye">Right eye</span></label>
+            <label><input type="radio" name="side" value="left" checked><span data-copy="leftEye">Left eye</span></label>
+            <label><input type="radio" name="side" value="right"><span data-copy="rightEye">Right eye</span></label>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend data-copy="pattern">Dark area shape</legend>
+          <div class="segments">
+            <label><input type="radio" name="pattern" value="edge" checked><span data-copy="rightEdge">From right edge</span></label>
+            <label><input type="radio" name="pattern" value="circle"><span data-copy="round">Round spot</span></label>
           </div>
         </fieldset>
         <fieldset class="progression">
-          <legend data-copy="progression">Illustrative progression</legend>
+          <legend data-copy="progression">Effect presets</legend>
           <div class="segments">
             <label><input type="radio" name="stage" value="0"><span data-copy="presetNone">None</span></label>
             <label><input type="radio" name="stage" value="1"><span data-copy="presetSubtle">Subtle</span></label>
-            <label><input type="radio" name="stage" value="2" checked><span data-copy="presetNoticeable">Noticeable</span></label>
-            <label><input type="radio" name="stage" value="3"><span data-copy="presetStronger">Stronger</span></label>
+            <label><input type="radio" name="stage" value="2"><span data-copy="presetNoticeable">Noticeable</span></label>
+            <label><input type="radio" name="stage" value="3" checked><span data-copy="presetStronger">Strong</span></label>
           </div>
         </fieldset>
         <fieldset>
@@ -110,10 +117,10 @@
     <section id="story" class="story" aria-labelledby="story-title">
       <h2 id="story-title" data-copy="storyTitle">For Mom</h2>
       <div class="story-text">
-        <p class="letter" data-copy="letter">I made this because I wanted to understand what you meant when you described a dark spot in the middle of what you see. It’s a way for us to look at something together and talk about what feels familiar.</p>
+        <p class="letter" data-copy="letter">Mom, when you told me that the right half of what you see through your left eye goes black, I wanted to understand what that feels like. You said faces are hard to make out until people come closer. I made this so we could look at it together and talk about what feels familiar.</p>
         <details open>
           <summary data-copy="viewerQuestion">What is the viewer showing?</summary>
-          <p><span data-copy="viewerAnswer">A blind spot in the middle of the visual field is called a central scotoma. A change in central vision can make it harder to read a word or make out a face you’re looking straight at. The patch is fixed at the center of each image to illustrate that idea; this page doesn’t track where you look.</span> <a hreflang="en" href="https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/low-vision" data-copy="visionSource">National Eye Institute: Low vision</a></p>
+          <p><span data-copy="viewerAnswer">The left-eye view starts with its right half blacked out. The other half is dimmer and still shows detail. In camera mode, frame a face on the visible side and try moving the camera a little closer to see what details you can make out.</span> <a hreflang="en" href="https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/low-vision" data-copy="visionSource">National Eye Institute: Low vision</a></p>
         </details>
         <details>
           <summary data-copy="glassesQuestion">What do glasses change?</summary>

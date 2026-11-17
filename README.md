@@ -1,6 +1,6 @@
 # Aai
 
-Aai is a small tribute to Mom. Two square views share one illustrated scene or webcam feed. The left view shows heavy blur. The right view preserves more detail around a dark central spot. The progression control changes the strength of the spot, and the glasses toggle adjusts focus. Both controls are illustrative.
+Aai is a small tribute to Mom. Two square views share one illustrated scene or webcam feed. The left-eye view starts with the right half blacked out and some detail visible in the dimmed left half. Controls let visitors adjust blur, choose a dark area shape, and change its width and darkness.
 
 Camera frames are drawn locally on canvas, with no recording or upload. No microphone permission is requested.
 

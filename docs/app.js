@@ -35,10 +35,10 @@ const focusLayers = {
   on: [SIZE, SIZE, 108, 50, 22].map(layer),
 };
 const stages = [
-  { size: 34, darkness: 0 },
+  { size: 50, darkness: 0 },
   { size: 26, darkness: 46 },
   { size: 34, darkness: 91 },
-  { size: 61, darkness: 94 },
+  { size: 50, darkness: 100 },
 ];
 const scenes = { en: new Image(), mr: new Image() };
 let cameraStatus = 'illustrated';
@@ -47,7 +47,7 @@ let camera = null;
 let request = 0;
 let pending = false;
 let frameId = 0;
-let side, glasses, spotRadius, spotOpacity;
+let side, pattern, glasses, darkWidth, spotOpacity;
 let nativeFullscreen = false;
 
 function updateFullScreenLabel() {
@@ -100,10 +100,11 @@ function showCameraStatus(nextStatus = cameraStatus, nextAction = cameraAction) 
 function update() {
   const words = localized[currentLanguage];
   side = document.querySelector('[name=side]:checked').value;
+  pattern = document.querySelector('[name=pattern]:checked').value;
   glasses = document.querySelector('[name=glasses]:checked').value === 'on';
   const size = spotSize.valueAsNumber;
   const darkness = spotDarkness.valueAsNumber;
-  spotRadius = (size / 100) * SIZE / 2;
+  darkWidth = (size / 100) * SIZE;
   spotOpacity = darkness / 100;
   spotSizeValue.value = number(size) + '%';
   spotDarknessValue.value = number(darkness) + '%';
@@ -116,11 +117,12 @@ function update() {
   for (const eye of eyes) {
     const level = eye.blur.valueAsNumber;
     const detail = words.blur[level];
-    const hasSpot = eye.side === side && spotRadius > 0 && spotOpacity > 0 && level !== 5;
-    const label = hasSpot ? detail + ' + ' + words.darkSpot : detail;
+    const hasSpot = eye.side === side && darkWidth > 0 && spotOpacity > 0 && level !== 5;
+    const effect = pattern === 'edge' ? words.rightDark : words.darkSpot;
+    const label = hasSpot ? detail + ' + ' + effect : detail;
     eye.blurLevel.value = number(level) + ' / ' + number(5);
     eye.blur.setAttribute('aria-valuetext', words.blurValue(number(level), number(5), detail));
-    eye.label.textContent = label;
+    eye.label.textContent = hasSpot ? effect : detail;
     eye.label.classList.toggle('affected', hasSpot);
     eye.canvas.toggleAttribute('data-blank', level === 5);
     eye.canvas.setAttribute('aria-label', words.eyeDescription(copy(eye.side + 'Eye'), label, glasses));
@@ -155,13 +157,25 @@ function render() {
     if (base !== previousBase) drawSquare(base, source, width, height);
     previousBase = base;
     eye.ctx.drawImage(base.canvas, 0, 0, SIZE, SIZE);
-    if (eye.side === side && spotRadius > 0 && spotOpacity > 0) drawSpot(eye.ctx);
+    if (eye.side === side && darkWidth > 0 && spotOpacity > 0) drawDarkArea(eye.ctx);
   }
 }
 
-function drawSpot(ctx) {
+function drawDarkArea(ctx) {
+  if (pattern === 'edge') {
+    const boundary = SIZE - darkWidth;
+    // A dim left edge leaves the remaining part of the view readable.
+    const shade = ctx.createLinearGradient(0, 0, Math.max(1, boundary), 0);
+    shade.addColorStop(0, 'rgba(0, 0, 0,' + .2 * spotOpacity + ')');
+    shade.addColorStop(1, 'transparent');
+    ctx.fillStyle = shade;
+    ctx.fillRect(0, 0, boundary, SIZE);
+    ctx.fillStyle = 'rgba(0, 0, 0,' + spotOpacity + ')';
+    ctx.fillRect(boundary, 0, darkWidth, SIZE);
+    return;
+  }
   const center = SIZE / 2;
-  const gradient = ctx.createRadialGradient(center, center, 0, center, center, spotRadius);
+  const gradient = ctx.createRadialGradient(center, center, 0, center, center, darkWidth / 2);
   gradient.addColorStop(.12, 'rgba(0, 0, 0,' + spotOpacity + ')');
   gradient.addColorStop(.45, 'rgba(0, 0, 0,' + spotOpacity * .67 + ')');
   gradient.addColorStop(1, 'transparent');
