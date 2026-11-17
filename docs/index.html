@@ -21,7 +21,7 @@
         <p class="eyebrow">A tribute to Mom</p>
         <h1 id="title">A view through<br><em>two eyes.</em></h1>
       </div>
-      <p class="dek">What happens when the middle of a familiar scene becomes harder to see? Look at the same scene through two different views.</p>
+      <p class="dek">The left view is heavily blurred. The right view has a dark spot in the middle, with more detail around it.</p>
     </section>
     <section class="viewer" id="viewer" aria-labelledby="viewer-title">
       <div class="viewer-heading">
@@ -33,11 +33,11 @@
       </div>
       <div class="eyes">
         <figure>
-          <figcaption><strong>Left eye</strong><span id="left-label">Reference view</span></figcaption>
+          <figcaption><strong>Left eye</strong><span id="left-label">Heavy blur</span></figcaption>
           <div class="eye-frame"><canvas id="left" width="640" height="640" aria-labelledby="left-label" role="img"></canvas><i class="reticle" aria-hidden="true"></i></div>
         </figure>
         <figure>
-          <figcaption><strong>Right eye</strong><span id="right-label" class="affected">Illustrated change</span></figcaption>
+          <figcaption><strong>Right eye</strong><span id="right-label" class="affected">Clearer detail + dark spot</span></figcaption>
           <div class="eye-frame"><canvas id="right" width="640" height="640" aria-labelledby="right-label" role="img"></canvas><i class="reticle" aria-hidden="true"></i></div>
         </figure>
       </div>
@@ -47,12 +47,11 @@
       </div>
       <div class="controls">
         <fieldset>
-          <legend>Affected side</legend>
+          <legend>Dark spot side</legend>
           <div class="segments">
             <label><input type="radio" name="side" value="left"><span>Left eye</span></label>
             <label><input type="radio" name="side" value="right" checked><span>Right eye</span></label>
           </div>
-          <p>Choose either eye for this example.</p>
         </fieldset>
         <fieldset class="progression">
           <legend>Illustrative progression</legend>
@@ -62,7 +61,7 @@
             <label><input type="radio" name="stage" value="2" checked><span>Noticeable</span></label>
             <label><input type="radio" name="stage" value="3"><span>Stronger</span></label>
           </div>
-          <p id="stage-note">A dark patch and blur soften details in the middle.</p>
+          <p id="stage-note">A dark spot hides details in the middle.</p>
         </fieldset>
         <fieldset>
           <legend>Glasses</legend>
@@ -70,7 +69,7 @@
             <label><input type="radio" name="glasses" value="off" checked><span>Off</span></label>
             <label><input type="radio" name="glasses" value="on"><span>On</span></label>
           </div>
-          <p>Compare added focus blur with and without correction.</p>
+          <p>Try a small change in focus.</p>
         </fieldset>
       </div>
       <p class="view-note">These are separate illustrations of each eye, not a prediction or a reconstruction of anyone’s sight. The stages show different effect strengths, not a timeline.</p>
@@ -87,7 +86,7 @@
         </details>
         <details>
           <summary>What do glasses change?</summary>
-          <p>Glasses can correct blur caused by the eye not focusing light properly. Here, switching glasses on removes an added focus blur from both views. The illustrated central patch stays in place. The toggle doesn’t model a prescription. <a href="https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/refractive-errors">National Eye Institute: Refractive errors</a></p>
+          <p>Glasses can correct blur caused by the eye not focusing light properly. The toggle illustrates a small focus adjustment layered over the two views. <a href="https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/refractive-errors">National Eye Institute: Refractive errors</a></p>
         </details>
         <details>
           <summary>How do we find out if vision has changed?</summary>

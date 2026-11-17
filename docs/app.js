@@ -19,14 +19,16 @@ function layer(size = SIZE) {
   return { canvas, ctx: canvas.getContext('2d') };
 }
 
-const focused = layer();
-const focusBlur = layer(144);
+const focusLayers = {
+  left: { off: layer(16), on: layer(22) },
+  right: { off: layer(256), on: layer() },
+};
 const centerBlur = layer(64);
 const patch = layer();
 const stages = [
-  { text: 'Both views use the same focus setting, with no central patch.' },
+  { text: 'The spot is off. You can compare the blur on its own.' },
   { text: 'A small, faint patch softens details in the middle.', radius: 84, core: .46 },
-  { text: 'A dark patch and blur soften details in the middle.', radius: 132, core: .76 },
+  { text: 'A dark spot hides details in the middle.', radius: 110, core: .91 },
   { text: 'A larger, darker patch obscures more of the middle.', radius: 194, core: .94 },
 ];
 const scene = new Image();
@@ -43,12 +45,13 @@ function update() {
   glasses = document.querySelector('[name=glasses]:checked').value === 'on';
   stageNote.textContent = stages[stage].text;
   for (const eye of eyes) {
-    const affected = eye.side === side && stage !== 0;
-    eye.label.textContent = affected ? 'Illustrated change' : 'Reference view';
-    eye.label.classList.toggle('affected', affected);
+    const hasSpot = eye.side === side && stage !== 0;
+    const detail = eye.side === 'left' ? 'Heavy blur' : 'Clearer detail';
+    const label = hasSpot ? detail + ' + dark spot' : detail;
+    eye.label.textContent = label;
+    eye.label.classList.toggle('affected', hasSpot);
     eye.canvas.setAttribute('aria-label', (eye.side === 'left' ? 'Left' : 'Right') +
-      ' eye: ' + (affected ? stages[stage].text : 'reference view') +
-      (glasses ? ' Glasses on.' : ' Glasses off; mild focus blur.'));
+      ' eye: ' + label + '. Glasses ' + (glasses ? 'on.' : 'off.'));
     eye.canvas.removeAttribute('aria-labelledby');
   }
   render();
@@ -67,17 +70,17 @@ function render() {
   const height = live ? video.videoHeight : scene.naturalHeight;
   if (!width || !height) return;
 
-  if (glasses) {
-    drawSquare(focused, source, width, height);
-  } else {
-    drawSquare(focusBlur, source, width, height);
-    focused.ctx.drawImage(focusBlur.canvas, 0, 0, SIZE, SIZE);
-  }
+  const setting = glasses ? 'on' : 'off';
+  const left = focusLayers.left[setting];
+  const right = focusLayers.right[setting];
+  drawSquare(left, source, width, height);
+  drawSquare(right, source, width, height);
 
   if (stage) {
     const { radius, core } = stages[stage];
     const center = SIZE / 2;
-    centerBlur.ctx.drawImage(focused.canvas, 0, 0, centerBlur.canvas.width, centerBlur.canvas.height);
+    const spotSource = side === 'left' ? left : right;
+    centerBlur.ctx.drawImage(spotSource.canvas, 0, 0, centerBlur.canvas.width, centerBlur.canvas.height);
     const ctx = patch.ctx;
     ctx.clearRect(0, 0, SIZE, SIZE);
     ctx.drawImage(centerBlur.canvas, 0, 0, SIZE, SIZE);
@@ -99,7 +102,8 @@ function render() {
   }
 
   for (const eye of eyes) {
-    eye.ctx.drawImage(focused.canvas, 0, 0);
+    const base = eye.side === 'left' ? left : right;
+    eye.ctx.drawImage(base.canvas, 0, 0, SIZE, SIZE);
     if (stage && eye.side === side) eye.ctx.drawImage(patch.canvas, 0, 0);
   }
 }
