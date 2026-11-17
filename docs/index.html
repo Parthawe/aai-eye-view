@@ -7,14 +7,13 @@
   <meta name="description" content="A tribute to Mom and an interactive illustration of how vision can differ between two eyes.">
   <title>Aai | A view through two eyes</title>
   <link rel="icon" href="./mark.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="./style.css?v=strong">
-  <script src="./language.js?v=strong" defer></script>
-  <script src="./app.js?v=strong" defer></script>
+  <link rel="stylesheet" href="./style.css?v=simple">
+  <script src="./language.js?v=simple" defer></script>
+  <script src="./app.js?v=simple" defer></script>
 </head>
 <body>
   <header class="masthead wrap">
     <a class="wordmark" href="#" aria-label="Aai home" data-label="home"><img src="./mark.svg" width="36" height="24" alt=""> <span data-copy="brand">Aai</span></a>
-    <nav aria-label="Main" data-label="mainNav"><a href="#viewer" data-copy="viewerNav">The viewer</a><a href="#story" data-copy="storyNav">The story</a></nav>
     <div class="language-switch" role="group" aria-label="Site language" data-label="languageLabel">
       <button type="button" lang="en" data-language="en" aria-pressed="true">English</button>
       <button type="button" lang="mr" data-language="mr" aria-pressed="false">मराठी</button>
@@ -23,14 +22,14 @@
   <main class="wrap">
     <section class="viewer" id="viewer" aria-labelledby="viewer-title">
       <div class="viewer-heading">
-        <h1 id="viewer-title" data-copy="viewerTitle">A view through two eyes</h1>
+        <h1 id="viewer-title" data-copy="viewerTitle">Through her eyes</h1>
         <div class="viewer-actions">
-          <button id="camera" class="viewer-button" type="button" aria-describedby="camera-note">
+          <button id="camera" class="viewer-button primary" type="button" aria-describedby="camera-note">
             <svg width="19" height="16" viewBox="0 0 20 16" fill="none" aria-hidden="true"><rect x="1" y="3" width="12" height="10" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="m13 6 5-2v8l-5-2" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
             <span>Use my camera</span>
           </button>
-          <button id="viewer-adjust" class="viewer-button" type="button" aria-expanded="false" data-copy="adjustView">Adjust view</button>
-          <button id="fullscreen" class="viewer-button primary" type="button" aria-pressed="false">
+          <button id="viewer-adjust" class="viewer-button" type="button" aria-expanded="false" data-copy="adjustView">Adjust</button>
+          <button id="fullscreen" class="viewer-button" type="button" aria-pressed="false">
             <svg width="17" height="17" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 7V3h4m6 0h4v4m0 6v4h-4m-6 0H3v-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <span>Full screen</span>
           </button>
@@ -38,8 +37,8 @@
       </div>
       <p class="rotate-hint">
         <svg width="19" height="19" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="3" y="6" width="7" height="11" rx="1.1" stroke="currentColor" stroke-width="1.4"/><path d="M11 3a6 6 0 0 1 6 6m-3-2 3 2 2-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <span data-copy="rotatePhone">Turn your phone sideways and tap Full screen for a larger view.</span>
-        <span data-copy="rotateExpanded" class="rotate-expanded">Turn your phone sideways to make both views larger.</span>
+        <span data-copy="rotatePhone">Rotate phone for a larger view.</span>
+        <span data-copy="rotateExpanded" class="rotate-expanded">Rotate phone for a larger view.</span>
       </p>
       <div class="eyes">
         <figure>
@@ -63,8 +62,17 @@
       </div>
       <div class="under-views">
         <p id="camera-status" role="status">Illustrated scene</p>
-        <p id="camera-note" data-copy="cameraNote">Camera is optional. Video stays in this tab.</p>
+        <p id="camera-note" data-copy="cameraNote">Video stays on your phone.</p>
       </div>
+      <fieldset class="progression quick-presets">
+          <legend class="sr-only" data-copy="progression">Effect presets</legend>
+          <div class="segments">
+            <label><input type="radio" name="stage" value="0"><span data-copy="presetNone">None</span></label>
+            <label><input type="radio" name="stage" value="1"><span data-copy="presetSubtle">Subtle</span></label>
+            <label><input type="radio" name="stage" value="2"><span data-copy="presetNoticeable">Noticeable</span></label>
+            <label><input type="radio" name="stage" value="3" checked><span data-copy="presetStronger">Strong</span></label>
+          </div>
+        </fieldset>
       <div class="spot-adjustments">
         <div class="range-control">
           <div class="range-heading"><label for="spot-size" data-copy="spotSize">Dark area width</label><output id="spot-size-value" for="spot-size">50%</output></div>
@@ -92,50 +100,45 @@
             <label><input type="radio" name="pattern" value="circle"><span data-copy="round">Round spot</span></label>
           </div>
         </fieldset>
-        <fieldset class="progression">
-          <legend data-copy="progression">Effect presets</legend>
-          <div class="segments">
-            <label><input type="radio" name="stage" value="0"><span data-copy="presetNone">None</span></label>
-            <label><input type="radio" name="stage" value="1"><span data-copy="presetSubtle">Subtle</span></label>
-            <label><input type="radio" name="stage" value="2"><span data-copy="presetNoticeable">Noticeable</span></label>
-            <label><input type="radio" name="stage" value="3" checked><span data-copy="presetStronger">Strong</span></label>
-          </div>
-        </fieldset>
+
         <fieldset>
           <legend data-copy="glasses">Glasses</legend>
           <div class="segments">
             <label><input type="radio" name="glasses" value="off" checked><span data-copy="off">Off</span></label>
             <label><input type="radio" name="glasses" value="on"><span data-copy="on">On</span></label>
           </div>
-          <p data-copy="focusHint">Try a small change in focus.</p>
+          <p data-copy="focusHint">Compare focus.</p>
         </fieldset>
       </div>
-      <p class="view-note" data-copy="viewNote">These are separate illustrations of each eye, not a prediction or a reconstruction of anyone’s sight. The stages show different effect strengths, not a timeline.</p>
+      <p class="view-note" data-copy="viewNote">An illustration based on her description.</p>
       <video id="video" muted playsinline hidden></video>
     </section>
 
-    <section id="story" class="story" aria-labelledby="story-title">
+    <details id="story" class="info-panel">
+      <summary data-copy="info">Info</summary>
+      <div class="story">
       <h2 id="story-title" data-copy="storyTitle">For Mom</h2>
       <div class="story-text">
-        <p class="letter" data-copy="letter">Mom, when you told me that the right half of what you see through your left eye goes black, I wanted to understand what that feels like. You said faces are hard to make out until people come closer. I made this so we could look at it together and talk about what feels familiar.</p>
-        <details open>
+        <p class="letter" data-copy="letter">For Mom. A way to understand what she sees, together.</p>
+        <details>
           <summary data-copy="viewerQuestion">What is the viewer showing?</summary>
-          <p><span data-copy="viewerAnswer">The left-eye view is blurry at the left edge and gradually gets darker toward the right corner. In camera mode, frame a face on the visible side and try moving the camera a little closer to see what details you can make out.</span> <a hreflang="en" href="https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/low-vision" data-copy="visionSource">National Eye Institute: Low vision</a></p>
+          <p><span data-copy="viewerAnswer">The left view fades from blur to darkness. Try the camera, then choose Subtle or Strong.</span> <a hreflang="en" href="https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/low-vision" data-copy="visionSource">National Eye Institute: Low vision</a></p>
         </details>
         <details>
           <summary data-copy="glassesQuestion">What do glasses change?</summary>
-          <p><span data-copy="glassesAnswer">Glasses can correct blur caused by the eye not focusing light properly. The toggle illustrates a small focus adjustment layered over the two views.</span> <a hreflang="en" href="https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/refractive-errors" data-copy="glassesSource">National Eye Institute: Refractive errors</a></p>
+          <p><span data-copy="glassesAnswer">The glasses option makes a small focus adjustment.</span> <a hreflang="en" href="https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/refractive-errors" data-copy="glassesSource">National Eye Institute: Refractive errors</a></p>
         </details>
         <details>
           <summary data-copy="changeQuestion">How do we find out if vision has changed?</summary>
-          <p data-copy="changeAnswer">Ask the eye clinic what diagnosis they recorded, which eye is affected, what the injections are treating, and whether vision or exam findings have changed across visits. Ask what to do if redness and worse vision occur together, particularly after an injection. The viewer can’t answer those questions.</p>
+          <p data-copy="changeAnswer">Her eye clinic can compare exams and explain changes in her vision.</p>
         </details>
         <details id="privacy">
           <summary data-copy="privacy">Camera and privacy</summary>
-          <p data-copy="privacyAnswer">Camera access starts only when you press the camera button and grant permission. The site processes frames in this tab, doesn’t record or upload them, and never requests the microphone. Use “Stop camera” to go back to the illustrated scene.</p>
+          <p data-copy="privacyAnswer">Camera starts with your permission. Video stays in this tab. No recording, uploads, or microphone.</p>
         </details>
       </div>
-    </section>
+      </div>
+    </details>
   </main>
   <footer class="wrap footer"><span data-copy="footer">Aai · For Mom</span><a href="#privacy" id="privacy-link" data-copy="privacy">Camera and privacy</a></footer>
   <noscript>

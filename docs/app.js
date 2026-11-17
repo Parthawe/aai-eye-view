@@ -9,7 +9,7 @@ const viewer = document.querySelector('#viewer');
 const fullScreenButton = document.querySelector('#fullscreen');
 const fullScreenLabel = fullScreenButton.querySelector('span');
 const adjustButton = document.querySelector('#viewer-adjust');
-const surroundingPage = document.querySelectorAll('.masthead, .story, .footer');
+const surroundingPage = document.querySelectorAll('.masthead, .info-panel, .footer');
 const spotSize = document.querySelector('#spot-size');
 const spotDarkness = document.querySelector('#spot-darkness');
 const spotSizeValue = document.querySelector('#spot-size-value');
@@ -49,6 +49,37 @@ let pending = false;
 let frameId = 0;
 let side, pattern, glasses, darkWidth, spotOpacity;
 let nativeFullscreen = false;
+const savedControls = [...document.querySelectorAll('input[type=range], input[type=radio]:not([name=stage])')];
+
+function saveSettings() {
+  const settings = {};
+  for (const input of savedControls) {
+    if (input.type === 'range') settings[input.id] = input.value;
+    else if (input.checked) settings[input.name] = input.value;
+  }
+  try {
+    localStorage.setItem('aai-view-settings', JSON.stringify(settings));
+  } catch {
+    // The viewer also works when browser storage is unavailable.
+  }
+}
+
+function restoreSettings() {
+  try {
+    const settings = JSON.parse(localStorage.getItem('aai-view-settings')) || {};
+    for (const input of savedControls) {
+      const value = settings[input.id || input.name];
+      if (input.type === 'range') {
+        if (typeof value === 'string' && Number.isFinite(Number(value))) input.value = value;
+      } else if (typeof value === 'string') {
+        const valid = savedControls.some(candidate => candidate.name === input.name && candidate.value === value);
+        if (valid) input.checked = input.value === value;
+      }
+    }
+  } catch {
+    // Start with the default view when saved data cannot be read.
+  }
+}
 
 function updateFullScreenLabel() {
   const expanded = viewer.classList.contains('is-expanded');
@@ -275,18 +306,20 @@ function changeLanguage(language) {
   update();
 }
 
-document.querySelector('.controls').addEventListener('change', event => {
+viewer.addEventListener('change', event => {
   if (event.target.name === 'stage') {
     const preset = stages[Number(event.target.value)];
     spotSize.value = preset.size;
     spotDarkness.value = preset.darkness;
   }
   update();
+  saveSettings();
 });
 spotSize.addEventListener('input', update);
 spotDarkness.addEventListener('input', update);
 for (const eye of eyes) eye.blur.addEventListener('input', update);
 document.querySelector('#privacy-link').addEventListener('click', () => {
+  document.querySelector('#story').open = true;
   document.querySelector('#privacy').open = true;
 });
 button.addEventListener('click', toggleCamera);
@@ -314,4 +347,5 @@ for (const toggle of languageButtons) {
     changeLanguage(toggle.dataset.language);
   });
 }
+restoreSettings();
 changeLanguage(new URLSearchParams(location.search).get('lang'));
