@@ -5,6 +5,11 @@ const status = document.querySelector('#camera-status');
 const button = document.querySelector('#camera');
 const buttonText = button.querySelector('span');
 const video = document.querySelector('#video');
+const viewer = document.querySelector('#viewer');
+const fullScreenButton = document.querySelector('#fullscreen');
+const fullScreenLabel = fullScreenButton.querySelector('span');
+const adjustButton = document.querySelector('#viewer-adjust');
+const surroundingPage = document.querySelectorAll('.masthead, .story, .footer');
 const spotSize = document.querySelector('#spot-size');
 const spotDarkness = document.querySelector('#spot-darkness');
 const spotSizeValue = document.querySelector('#spot-size-value');
@@ -43,6 +48,46 @@ let request = 0;
 let pending = false;
 let frameId = 0;
 let side, glasses, spotRadius, spotOpacity;
+let nativeFullscreen = false;
+
+function updateFullScreenLabel() {
+  const expanded = viewer.classList.contains('is-expanded');
+  const words = localized[currentLanguage];
+  fullScreenLabel.textContent = expanded ? words.exitFullScreen : words.fullScreen;
+  fullScreenButton.setAttribute('aria-pressed', String(expanded));
+}
+
+function setExpanded(expanded) {
+  viewer.classList.toggle('is-expanded', expanded);
+  document.body.classList.toggle('viewer-expanded', expanded);
+  for (const section of surroundingPage) section.inert = expanded;
+  if (!expanded) {
+    viewer.classList.remove('show-adjustments');
+    adjustButton.setAttribute('aria-expanded', 'false');
+  }
+  updateFullScreenLabel();
+  fullScreenButton.focus({ preventScroll: true });
+}
+
+async function toggleFullScreen() {
+  if (viewer.classList.contains('is-expanded')) {
+    if (document.fullscreenElement === viewer) {
+      await document.exitFullscreen();
+    } else {
+      setExpanded(false);
+    }
+    return;
+  }
+
+  setExpanded(true);
+  if (document.fullscreenEnabled && viewer.requestFullscreen) {
+    try {
+      await viewer.requestFullscreen();
+    } catch {
+      // The viewer already fills the browser viewport.
+    }
+  }
+}
 
 function showCameraStatus(nextStatus = cameraStatus, nextAction = cameraAction) {
   cameraStatus = nextStatus;
@@ -199,6 +244,7 @@ async function toggleCamera() {
 
 function changeLanguage(language) {
   applyLanguage(language);
+  updateFullScreenLabel();
   const scene = scenes[currentLanguage];
   if (!scene.src) {
     scene.onload = render;
@@ -229,6 +275,21 @@ document.querySelector('#privacy-link').addEventListener('click', () => {
   document.querySelector('#privacy').open = true;
 });
 button.addEventListener('click', toggleCamera);
+fullScreenButton.addEventListener('click', toggleFullScreen);
+adjustButton.addEventListener('click', () => {
+  const open = viewer.classList.toggle('show-adjustments');
+  adjustButton.setAttribute('aria-expanded', String(open));
+});
+document.addEventListener('fullscreenchange', () => {
+  const previous = nativeFullscreen;
+  nativeFullscreen = document.fullscreenElement === viewer;
+  if (previous && !nativeFullscreen) setExpanded(false);
+});
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && !document.fullscreenElement && viewer.classList.contains('is-expanded')) {
+    setExpanded(false);
+  }
+});
 window.addEventListener('pagehide', () => stopCamera());
 for (const toggle of languageButtons) {
   toggle.addEventListener('click', () => {
