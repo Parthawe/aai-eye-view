@@ -163,15 +163,12 @@ function render() {
 
 function drawDarkArea(ctx) {
   if (pattern === 'edge') {
-    const boundary = SIZE - darkWidth;
-    // A dim left edge leaves the remaining part of the view readable.
-    const shade = ctx.createLinearGradient(0, 0, Math.max(1, boundary), 0);
-    shade.addColorStop(0, 'rgba(0, 0, 0,' + .2 * spotOpacity + ')');
-    shade.addColorStop(1, 'transparent');
+    const start = SIZE - 1 - darkWidth * 2;
+    const shade = ctx.createLinearGradient(start, 0, SIZE - 1, 0);
+    shade.addColorStop(0, 'transparent');
+    shade.addColorStop(1, 'rgba(0, 0, 0,' + spotOpacity + ')');
     ctx.fillStyle = shade;
-    ctx.fillRect(0, 0, boundary, SIZE);
-    ctx.fillStyle = 'rgba(0, 0, 0,' + spotOpacity + ')';
-    ctx.fillRect(boundary, 0, darkWidth, SIZE);
+    ctx.fillRect(0, 0, SIZE, SIZE);
     return;
   }
   const center = SIZE / 2;
