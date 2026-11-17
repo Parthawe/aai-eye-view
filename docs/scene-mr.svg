@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" xml:lang="mr" width="640" height="640" viewBox="0 0 640 640">
+  <defs>
+    <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#a0aca0"/><stop offset="1" stop-color="#dfd1ad"/></linearGradient>
+    <linearGradient id="wall" x2="1" y2="1"><stop stop-color="#ede1c1"/><stop offset="1" stop-color="#cdb994"/></linearGradient>
+    <linearGradient id="table" x2="0" y2="1"><stop stop-color="#9e6946"/><stop offset="1" stop-color="#6d452f"/></linearGradient>
+    <linearGradient id="cup"><stop stop-color="#c88360"/><stop offset=".55" stop-color="#ad6245"/><stop offset="1" stop-color="#834732"/></linearGradient>
+    <linearGradient id="book" x2="1" y2=".4"><stop stop-color="#f6eacd"/><stop offset=".49" stop-color="#d6c09e"/><stop offset=".53" stop-color="#f6e6c4"/><stop offset="1" stop-color="#ebd9b4"/></linearGradient>
+    <pattern id="stipple" width="23" height="29" patternUnits="userSpaceOnUse">
+      <path d="M3 6h1m8 5h1m5-8h1M6 24h1m11-6h1m1 10h1" stroke="#4a3725" stroke-opacity=".16"/>
+      <path d="M8 13h1m8 1h1M2 19h1m11 5h1" stroke="#fff2d0" stroke-opacity=".45"/>
+    </pattern>
+    <pattern id="cloth" width="15" height="15" patternUnits="userSpaceOnUse"><path d="M2 0v15M5 0v15M0 4h15M0 8h15" stroke="#a99869" stroke-opacity=".3"/></pattern>
+  </defs>
+  <rect width="640" height="640" fill="url(#wall)"/>
+  <path d="M454 0h186v459L411 441Z" fill="#a99172" opacity=".21"/>
+  <path d="M0 0h402v390H0z" fill="#715841"/>
+  <path d="M0 0h382v367H0z" fill="url(#sky)"/>
+  <circle cx="278" cy="106" r="39" fill="#efdab0"/>
+  <path d="M0 236q50-10 83-34t89 7q31 15 72-5 77-44 138 5v158H0Z" fill="#939b75"/>
+  <path d="M0 278q81-57 165-15t217-23v127H0Z" fill="#788365"/>
+  <path d="M0 307q71-32 131-14t129-4q57-18 122 8v70H0Z" fill="#667559"/>
+  <path d="m-5 329 33-11 42 7 51-8 40 10 44-5 80 10 44-9 57 6v41H0Z" fill="#52664f"/>
+  <path d="M0 369h402v18H0zM172 0h17v379h-17zM0 178h387v11H0zM377 0h16v385h-16z" fill="#896c52"/>
+  <path d="M173 0h5v370h-5zm210 0h5v368h-5zM0 179h382v3H0zm0 190h391v4H0z" fill="#c4a47a"/>
+  <path d="M0 382h423l-8 12H0z" fill="#ad8862"/>
+  <path d="M417 72h150v216H417z" fill="#ae9677" opacity=".45"/>
+  <path d="M411 65h150v216H411z" fill="#7c6149"/>
+  <path d="M418 72h136v202H418z" fill="#edddbb"/>
+  <path d="M425 79h122v188H425z" fill="none" stroke="#9c8869"/>
+  <g fill="#4c5040" text-anchor="middle" font-family="Kohinoor Devanagari, Noto Sans Devanagari, Mangal, sans-serif">
+    <text x="486" y="143" font-size="51">अ</text>
+    <text x="486" y="177" font-size="27" letter-spacing="4">क प</text>
+    <text x="486" y="204" font-size="19" letter-spacing="4">त म ज</text>
+    <text x="486" y="224" font-size="14" letter-spacing="3">ल प अ द</text>
+    <text x="486" y="244" font-size="9" letter-spacing="2">प अ च फ द</text>
+  </g>
+  <path d="M0 429c194-24 450-25 640 2v209H0Z" fill="url(#table)"/>
+  <path d="M0 441c209-25 449-24 640 0M0 475q287-33 640 2M0 551q299-34 640 5M0 613q318-31 640 3" fill="none" stroke="#c49169" stroke-opacity=".54" stroke-width="2"/>
+  <path d="m385 481 255 20v139H316z" fill="#d3c298"/>
+  <path d="m385 481 255 20v139H316z" fill="url(#cloth)"/>
+  <path d="m389 491 251 20M379 503l261 20" stroke="#8f6249" stroke-width="2" opacity=".7"/>
+  <ellipse cx="122" cy="474" rx="90" ry="16" fill="#4c3426" opacity=".35"/>
+  <path d="M70 351c10 39 14 92 25 114q25 16 61 0c13-26 14-74 22-114Z" fill="#9b684c"/>
+  <path d="M70 351q55 21 108 0l-2 12q-55 18-104 0z" fill="#be865f"/>
+  <ellipse cx="124" cy="350" rx="54" ry="11" fill="#66513a"/>
+  <g fill="none" stroke="#455741" stroke-width="3">
+    <path d="M123 351q-2-95-63-155m68 158q13-100 65-141m-65 138q-6-110 6-155m-9 157q-45-49-85-63m94 60q33-60 78-69"/>
+  </g>
+  <g fill="#58694b">
+    <path d="M68 210q-29-2-43-35 38-1 43 35m25 29q-29 1-49-20 30-11 49 20m17 32q-35 6-51-17 32-13 51 17m-14 55q-35 4-58-17 35-10 58 17m-33-25q-33 1-47-25 33-2 47 25"/>
+    <path d="M124 270q-24-23-14-52 26 26 14 52m7-37q-10-30 14-56 11 35-14 56m22 53q23-31 55-22-20 26-55 22m15-36q12-36 43-41-5 32-43 41m-13 77q13-28 49-26-16 23-49 26m42-39q16-22 42-16-15 22-42 16"/>
+  </g>
+  <ellipse cx="319" cy="553" rx="170" ry="21" fill="#4d3428" opacity=".3"/>
+  <path d="M159 496q85-18 166 12 68-33 165-13l26 59q-109-17-190 14-96-34-190-14Z" fill="#644837"/>
+  <path d="M163 486q85-16 162 13 71-33 160-14l24 60q-104-16-183 15-94-32-182-16Z" fill="url(#book)" stroke="#ac9370"/>
+  <path d="m325 499 1 61m-178-22q104-10 178 18 81-25 178-17" fill="none" stroke="#ac9370"/>
+  <g fill="none" stroke="#907956" stroke-width="2" opacity=".62">
+    <path d="M179 499q65-6 123 11m-125-4q65-5 125 12m-130-4q70-2 130 12m-133-5q68-2 133 13m-136-5q58-3 116 8"/>
+    <path d="M351 508q66-22 119-11m-119 19q67-19 122-12m-122 20q66-19 124-13m-124 21q66-19 128-14m-128 22q53-16 98-14"/>
+  </g>
+  <g transform="translate(-123 0)">
+  <path d="M446 352q-14-16 2-31t-3-30m18 59q-8-12 4-24t3-20" fill="none" stroke="#e5d9b5" stroke-opacity=".75" stroke-width="2"/>
+  <ellipse cx="478" cy="446" rx="97" ry="19" fill="#5e402f" opacity=".35"/>
+  <ellipse cx="466" cy="438" rx="85" ry="22" fill="#d9bb8a" stroke="#ac8861" stroke-width="3"/>
+  <ellipse cx="466" cy="437" rx="64" ry="14" fill="none" stroke="#b89a6d"/>
+  <path d="M508 373q58-15 49 22-7 29-50 26" fill="none" stroke="#934d35" stroke-width="11"/>
+  <path d="M397 368h120q-1 60-29 72h-61q-26-13-30-72Z" fill="url(#cup)"/>
+  <ellipse cx="457" cy="368" rx="60" ry="17" fill="#ecbd97" stroke="#9b573d" stroke-width="3"/>
+  <ellipse cx="457" cy="371" rx="51" ry="11" fill="#604231"/>
+  <path d="M418 388q39 13 81-1m-79 9q38 12 76-1" fill="none" stroke="#e7ad87" opacity=".75"/>
+  </g>
+  <rect width="640" height="640" fill="url(#stipple)" pointer-events="none"/>
+</svg>

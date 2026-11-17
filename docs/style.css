@@ -8,6 +8,19 @@ button,summary{cursor:pointer}
 :focus-visible{outline:2px solid var(--rust);outline-offset:4px}
 .wrap{width:min(100% - 96px,1056px);margin-inline:auto}
 .masthead{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--rule);min-height:72px}
+.masthead nav{margin-inline-start:auto}
+.language-switch{display:flex;flex:none;margin-inline-start:23px;border:1px solid #978975}
+.language-switch button{border:0;background:transparent;color:var(--ink);padding:6px 10px;font-size:13px;min-height:34px}
+.language-switch button+button{border-inline-start:1px solid #978975}
+.language-switch button[aria-pressed=true]{background:var(--ink);color:var(--paper)}
+.language-switch button:hover:not([aria-pressed=true]){background:#e7dece}
+button[lang=mr],:root[lang=mr]{--marathi:'Kohinoor Devanagari','Noto Sans Devanagari',Mangal,system-ui,sans-serif}
+button[lang=mr]{font-family:var(--marathi)}
+:root[lang=mr]{--serif:var(--marathi);--sans:var(--marathi)}
+:lang(mr) h1{font-size:clamp(45px,8vw,93px);line-height:1.04;letter-spacing:normal;margin-left:0}
+:lang(mr) h1 em{font-style:normal}
+:lang(mr) h2{line-height:1.2;letter-spacing:normal}
+:lang(mr) .eyebrow{letter-spacing:normal}
 .wordmark{display:flex;align-items:center;gap:9px;font:28px/1 var(--serif);text-decoration:none}
 nav{display:flex;gap:25px;font-size:13px}
 nav a{text-decoration:none}
@@ -70,4 +83,12 @@ details p a{color:var(--rust)}
 @media(max-width:690px){.intro{grid-template-columns:1fr}}
 @media(max-width:500px){.wrap{width:calc(100% - 32px)}.masthead{min-height:57px}nav{gap:14px}.intro{grid-template-columns:1fr;padding:31px 0 26px;gap:19px}h1{font-size:clamp(57px,16vw,78px)}.dek{max-width:29ch}.viewer-heading{align-items:end}.camera{padding-inline:8px;font-size:12px;gap:4px}.camera svg{width:15px}.eyes{gap:8px}.eyes figcaption{align-items:start;flex-direction:column;gap:0;padding-bottom:6px;font-size:11px}.under-views{font-size:11px}.story{grid-template-columns:1fr;gap:17px;padding-top:24px}.controls{gap:14px}.segments span{padding-inline:9px}}
 @media(max-width:355px){.viewer-heading{flex-wrap:wrap}.segments span{padding-inline:7px}}
+@media(max-width:500px){
+  .masthead{flex-wrap:wrap;column-gap:8px;row-gap:5px;padding-block:7px}
+  .masthead nav{gap:8px;font-size:12px}
+  .language-switch{margin-inline-start:0}
+  .language-switch button{padding-inline:6px;font-size:12px}
+  :lang(mr) .viewer-heading{flex-wrap:wrap}
+  :lang(mr) .range-heading{flex-wrap:wrap;row-gap:0}
+}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}

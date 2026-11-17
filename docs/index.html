@@ -7,25 +7,30 @@
   <meta name="description" content="A tribute to Mom and an interactive illustration of a change in central vision.">
   <title>Aai | A view through two eyes</title>
   <link rel="icon" href="./mark.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="./style.css?v=spot">
-  <script src="./app.js?v=spot" defer></script>
+  <link rel="stylesheet" href="./style.css?v=marathi">
+  <script src="./language.js?v=marathi" defer></script>
+  <script src="./app.js?v=marathi" defer></script>
 </head>
 <body>
   <header class="masthead wrap">
-    <a class="wordmark" href="#" aria-label="Aai home"><img src="./mark.svg" width="36" height="24" alt=""> Aai</a>
-    <nav aria-label="Main"><a href="#viewer">The viewer</a><a href="#story">The story</a></nav>
+    <a class="wordmark" href="#" aria-label="Aai home" data-label="home"><img src="./mark.svg" width="36" height="24" alt=""> <span data-copy="brand">Aai</span></a>
+    <nav aria-label="Main" data-label="mainNav"><a href="#viewer" data-copy="viewerNav">The viewer</a><a href="#story" data-copy="storyNav">The story</a></nav>
+    <div class="language-switch" role="group" aria-label="Site language" data-label="languageLabel">
+      <button type="button" lang="en" data-language="en" aria-pressed="true">English</button>
+      <button type="button" lang="mr" data-language="mr" aria-pressed="false">मराठी</button>
+    </div>
   </header>
   <main class="wrap">
     <section class="intro" aria-labelledby="title">
       <div>
-        <p class="eyebrow">A tribute to Mom</p>
-        <h1 id="title">A view through<br><em>two eyes.</em></h1>
+        <p class="eyebrow" data-copy="dedication">A tribute to Mom</p>
+        <h1 id="title"><span data-copy="titleFirst">A view through</span><br><em data-copy="titleSecond">two eyes.</em></h1>
       </div>
-      <p class="dek">Compare how blur and a dark spot affect the same scene in each eye.</p>
+      <p class="dek" data-copy="intro">Compare how blur and a dark spot affect the same scene in each eye.</p>
     </section>
     <section class="viewer" id="viewer" aria-labelledby="viewer-title">
       <div class="viewer-heading">
-        <div><p class="eyebrow section-index">01 / The viewer</p><h2 id="viewer-title">One scene, side by side</h2></div>
+        <div><p class="eyebrow section-index" data-copy="viewerIndex">01 / The viewer</p><h2 id="viewer-title" data-copy="viewerTitle">One scene, side by side</h2></div>
         <button id="camera" class="camera" type="button" aria-describedby="camera-note">
           <svg width="19" height="16" viewBox="0 0 20 16" fill="none" aria-hidden="true"><rect x="1" y="3" width="12" height="10" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="m13 6 5-2v8l-5-2" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
           <span>Use my camera</span>
@@ -33,94 +38,97 @@
       </div>
       <div class="eyes">
         <figure>
-          <figcaption><strong>Left eye</strong><span id="left-label">Heavy blur</span></figcaption>
+          <figcaption><strong data-copy="leftEye">Left eye</strong><span id="left-label">Heavy blur</span></figcaption>
           <div class="eye-frame"><canvas id="left" width="640" height="640" aria-labelledby="left-label" role="img"></canvas><i class="reticle" aria-hidden="true"></i></div>
           <div class="range-control">
-            <div class="range-heading"><label for="left-blur">Left eye blur</label><output id="left-blur-level" for="left-blur">4 / 5</output></div>
+            <div class="range-heading"><label for="left-blur" data-copy="leftBlur">Left eye blur</label><output id="left-blur-level" for="left-blur">4 / 5</output></div>
             <input id="left-blur" type="range" min="0" max="5" step="1" value="4">
-            <div class="range-scale" aria-hidden="true"><span>0 Sharp</span><span>5 No detail</span></div>
+            <div class="range-scale" aria-hidden="true"><span data-copy="blurMin">0 Sharp</span><span data-copy="blurMax">5 No detail</span></div>
           </div>
         </figure>
         <figure>
-          <figcaption><strong>Right eye</strong><span id="right-label" class="affected">Slight blur + dark spot</span></figcaption>
+          <figcaption><strong data-copy="rightEye">Right eye</strong><span id="right-label" class="affected">Slight blur + dark spot</span></figcaption>
           <div class="eye-frame"><canvas id="right" width="640" height="640" aria-labelledby="right-label" role="img"></canvas><i class="reticle" aria-hidden="true"></i></div>
           <div class="range-control">
-            <div class="range-heading"><label for="right-blur">Right eye blur</label><output id="right-blur-level" for="right-blur">1 / 5</output></div>
+            <div class="range-heading"><label for="right-blur" data-copy="rightBlur">Right eye blur</label><output id="right-blur-level" for="right-blur">1 / 5</output></div>
             <input id="right-blur" type="range" min="0" max="5" step="1" value="1">
-            <div class="range-scale" aria-hidden="true"><span>0 Sharp</span><span>5 No detail</span></div>
+            <div class="range-scale" aria-hidden="true"><span data-copy="blurMin">0 Sharp</span><span data-copy="blurMax">5 No detail</span></div>
           </div>
         </figure>
       </div>
       <div class="under-views">
         <p id="camera-status" role="status">Illustrated scene</p>
-        <p id="camera-note">Camera is optional. Video stays in this tab.</p>
+        <p id="camera-note" data-copy="cameraNote">Camera is optional. Video stays in this tab.</p>
       </div>
       <div class="spot-adjustments">
         <div class="range-control">
-          <div class="range-heading"><label for="spot-size">Spot size</label><output id="spot-size-value" for="spot-size">34%</output></div>
+          <div class="range-heading"><label for="spot-size" data-copy="spotSize">Spot size</label><output id="spot-size-value" for="spot-size">34%</output></div>
           <input id="spot-size" type="range" min="0" max="100" step="1" value="34">
-          <div class="range-scale" aria-hidden="true"><span>0% Hidden</span><span>100% Full width</span></div>
+          <div class="range-scale" aria-hidden="true"><span data-copy="spotSizeMin">0% Hidden</span><span data-copy="spotSizeMax">100% Full width</span></div>
         </div>
         <div class="range-control">
-          <div class="range-heading"><label for="spot-darkness">Spot darkness</label><output id="spot-darkness-value" for="spot-darkness">91%</output></div>
+          <div class="range-heading"><label for="spot-darkness" data-copy="spotDarkness">Spot darkness</label><output id="spot-darkness-value" for="spot-darkness">91%</output></div>
           <input id="spot-darkness" type="range" min="0" max="100" step="1" value="91">
-          <div class="range-scale" aria-hidden="true"><span>0% Clear</span><span>100% Black center</span></div>
+          <div class="range-scale" aria-hidden="true"><span data-copy="spotDarknessMin">0% Clear</span><span data-copy="spotDarknessMax">100% Black center</span></div>
         </div>
       </div>
       <div class="controls">
         <fieldset>
-          <legend>Dark spot side</legend>
+          <legend data-copy="spotSide">Dark spot side</legend>
           <div class="segments">
-            <label><input type="radio" name="side" value="left"><span>Left eye</span></label>
-            <label><input type="radio" name="side" value="right" checked><span>Right eye</span></label>
+            <label><input type="radio" name="side" value="left"><span data-copy="leftEye">Left eye</span></label>
+            <label><input type="radio" name="side" value="right" checked><span data-copy="rightEye">Right eye</span></label>
           </div>
         </fieldset>
         <fieldset class="progression">
-          <legend>Illustrative progression</legend>
+          <legend data-copy="progression">Illustrative progression</legend>
           <div class="segments">
-            <label><input type="radio" name="stage" value="0"><span>None</span></label>
-            <label><input type="radio" name="stage" value="1"><span>Subtle</span></label>
-            <label><input type="radio" name="stage" value="2" checked><span>Noticeable</span></label>
-            <label><input type="radio" name="stage" value="3"><span>Stronger</span></label>
+            <label><input type="radio" name="stage" value="0"><span data-copy="presetNone">None</span></label>
+            <label><input type="radio" name="stage" value="1"><span data-copy="presetSubtle">Subtle</span></label>
+            <label><input type="radio" name="stage" value="2" checked><span data-copy="presetNoticeable">Noticeable</span></label>
+            <label><input type="radio" name="stage" value="3"><span data-copy="presetStronger">Stronger</span></label>
           </div>
         </fieldset>
         <fieldset>
-          <legend>Glasses</legend>
+          <legend data-copy="glasses">Glasses</legend>
           <div class="segments">
-            <label><input type="radio" name="glasses" value="off" checked><span>Off</span></label>
-            <label><input type="radio" name="glasses" value="on"><span>On</span></label>
+            <label><input type="radio" name="glasses" value="off" checked><span data-copy="off">Off</span></label>
+            <label><input type="radio" name="glasses" value="on"><span data-copy="on">On</span></label>
           </div>
-          <p>Try a small change in focus.</p>
+          <p data-copy="focusHint">Try a small change in focus.</p>
         </fieldset>
       </div>
-      <p class="view-note">These are separate illustrations of each eye, not a prediction or a reconstruction of anyone’s sight. The stages show different effect strengths, not a timeline.</p>
+      <p class="view-note" data-copy="viewNote">These are separate illustrations of each eye, not a prediction or a reconstruction of anyone’s sight. The stages show different effect strengths, not a timeline.</p>
       <video id="video" muted playsinline hidden></video>
     </section>
 
     <section id="story" class="story" aria-labelledby="story-title">
-      <div><p class="eyebrow section-index">02 / The story</p><h2 id="story-title">For Mom</h2></div>
+      <div><p class="eyebrow section-index" data-copy="storyIndex">02 / The story</p><h2 id="story-title" data-copy="storyTitle">For Mom</h2></div>
       <div class="story-text">
-        <p class="letter">I made this because I wanted to understand what you meant when you described a dark spot in the middle of what you see. It’s a way for us to look at something together and talk about what feels familiar.</p>
+        <p class="letter" data-copy="letter">I made this because I wanted to understand what you meant when you described a dark spot in the middle of what you see. It’s a way for us to look at something together and talk about what feels familiar.</p>
         <details open>
-          <summary>What is the viewer showing?</summary>
-          <p>A blind spot in the middle of the visual field is called a central scotoma. A change in central vision can make it harder to read a word or make out a face you’re looking straight at. The patch is fixed at the center of each image to illustrate that idea; this page doesn’t track where you look. <a href="https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/low-vision">National Eye Institute: Low vision</a></p>
+          <summary data-copy="viewerQuestion">What is the viewer showing?</summary>
+          <p><span data-copy="viewerAnswer">A blind spot in the middle of the visual field is called a central scotoma. A change in central vision can make it harder to read a word or make out a face you’re looking straight at. The patch is fixed at the center of each image to illustrate that idea; this page doesn’t track where you look.</span> <a hreflang="en" href="https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/low-vision" data-copy="visionSource">National Eye Institute: Low vision</a></p>
         </details>
         <details>
-          <summary>What do glasses change?</summary>
-          <p>Glasses can correct blur caused by the eye not focusing light properly. The toggle illustrates a small focus adjustment layered over the two views. <a href="https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/refractive-errors">National Eye Institute: Refractive errors</a></p>
+          <summary data-copy="glassesQuestion">What do glasses change?</summary>
+          <p><span data-copy="glassesAnswer">Glasses can correct blur caused by the eye not focusing light properly. The toggle illustrates a small focus adjustment layered over the two views.</span> <a hreflang="en" href="https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/refractive-errors" data-copy="glassesSource">National Eye Institute: Refractive errors</a></p>
         </details>
         <details>
-          <summary>How do we find out if vision has changed?</summary>
-          <p>Ask the eye clinic what diagnosis they recorded, which eye is affected, what the injections are treating, and whether vision or exam findings have changed across visits. Ask what to do if redness and worse vision occur together, particularly after an injection. The viewer can’t answer those questions.</p>
+          <summary data-copy="changeQuestion">How do we find out if vision has changed?</summary>
+          <p data-copy="changeAnswer">Ask the eye clinic what diagnosis they recorded, which eye is affected, what the injections are treating, and whether vision or exam findings have changed across visits. Ask what to do if redness and worse vision occur together, particularly after an injection. The viewer can’t answer those questions.</p>
         </details>
         <details id="privacy">
-          <summary>Camera and privacy</summary>
-          <p>Camera access starts only when you press the camera button and grant permission. The site processes frames in this tab, doesn’t record or upload them, and never requests the microphone. Use “Stop camera” to go back to the illustrated scene.</p>
+          <summary data-copy="privacy">Camera and privacy</summary>
+          <p data-copy="privacyAnswer">Camera access starts only when you press the camera button and grant permission. The site processes frames in this tab, doesn’t record or upload them, and never requests the microphone. Use “Stop camera” to go back to the illustrated scene.</p>
         </details>
       </div>
     </section>
   </main>
-  <footer class="wrap footer"><span>Aai · For Mom</span><a href="#privacy" id="privacy-link">Camera and privacy</a></footer>
-  <noscript><p class="wrap">Enable JavaScript to use the side-by-side viewer.</p></noscript>
+  <footer class="wrap footer"><span data-copy="footer">Aai · For Mom</span><a href="#privacy" id="privacy-link" data-copy="privacy">Camera and privacy</a></footer>
+  <noscript>
+    <p class="wrap">Enable JavaScript to use the side-by-side viewer.</p>
+    <p class="wrap" lang="mr">दोन्ही दृश्यं पाहण्यासाठी जावास्क्रिप्ट सुरू करा.</p>
+  </noscript>
 </body>
 </html>

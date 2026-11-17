@@ -29,48 +29,56 @@ const focusLayers = {
   off: [SIZE, 256, 80, 36, 16].map(layer),
   on: [SIZE, SIZE, 108, 50, 22].map(layer),
 };
-const blurLabels = ['Sharp focus', 'Slight blur', 'Moderate blur', 'Strong blur', 'Heavy blur', 'No scene detail'];
 const stages = [
   { size: 34, darkness: 0 },
   { size: 26, darkness: 46 },
   { size: 34, darkness: 91 },
   { size: 61, darkness: 94 },
 ];
-const scene = new Image();
-let sceneFailed = false;
+const scenes = { en: new Image(), mr: new Image() };
+let cameraStatus = 'illustrated';
+let cameraAction = 'useCamera';
 let camera = null;
 let request = 0;
 let pending = false;
 let frameId = 0;
 let side, glasses, spotRadius, spotOpacity;
 
+function showCameraStatus(nextStatus = cameraStatus, nextAction = cameraAction) {
+  cameraStatus = nextStatus;
+  cameraAction = nextAction;
+  const words = localized[currentLanguage];
+  buttonText.textContent = words[cameraAction];
+  status.textContent = words[cameraStatus];
+}
+
 function update() {
+  const words = localized[currentLanguage];
   side = document.querySelector('[name=side]:checked').value;
   glasses = document.querySelector('[name=glasses]:checked').value === 'on';
   const size = spotSize.valueAsNumber;
   const darkness = spotDarkness.valueAsNumber;
   spotRadius = (size / 100) * SIZE / 2;
   spotOpacity = darkness / 100;
-  spotSizeValue.value = size + '%';
-  spotDarknessValue.value = darkness + '%';
-  spotSize.setAttribute('aria-valuetext', size + '% of the view width');
-  spotDarkness.setAttribute('aria-valuetext', darkness + '% darkness');
+  spotSizeValue.value = number(size) + '%';
+  spotDarknessValue.value = number(darkness) + '%';
+  spotSize.setAttribute('aria-valuetext', words.sizeValue(spotSizeValue.value));
+  spotDarkness.setAttribute('aria-valuetext', words.darknessValue(spotDarknessValue.value));
   for (const input of stageInputs) {
     const preset = stages[Number(input.value)];
     input.checked = preset.size === size && preset.darkness === darkness;
   }
   for (const eye of eyes) {
     const level = eye.blur.valueAsNumber;
-    const detail = blurLabels[level];
+    const detail = words.blur[level];
     const hasSpot = eye.side === side && spotRadius > 0 && spotOpacity > 0 && level !== 5;
-    const label = hasSpot ? detail + ' + dark spot' : detail;
-    eye.blurLevel.value = level + ' / 5';
-    eye.blur.setAttribute('aria-valuetext', level + ' of 5, ' + detail);
+    const label = hasSpot ? detail + ' + ' + words.darkSpot : detail;
+    eye.blurLevel.value = number(level) + ' / ' + number(5);
+    eye.blur.setAttribute('aria-valuetext', words.blurValue(number(level), number(5), detail));
     eye.label.textContent = label;
     eye.label.classList.toggle('affected', hasSpot);
     eye.canvas.toggleAttribute('data-blank', level === 5);
-    eye.canvas.setAttribute('aria-label', (eye.side === 'left' ? 'Left' : 'Right') +
-      ' eye: ' + label + '. Glasses ' + (glasses ? 'on.' : 'off.'));
+    eye.canvas.setAttribute('aria-label', words.eyeDescription(copy(eye.side + 'Eye'), label, glasses));
     eye.canvas.removeAttribute('aria-labelledby');
   }
   render();
@@ -84,6 +92,7 @@ function drawSquare(target, source, width, height) {
 
 function render() {
   const live = camera && video.readyState >= 2 && video.videoWidth > 0;
+  const scene = scenes[currentLanguage];
   const source = live ? video : scene;
   const width = live ? video.videoWidth : scene.naturalWidth;
   const height = live ? video.videoHeight : scene.naturalHeight;
@@ -130,28 +139,31 @@ function tick() {
     video.requestVideoFrameCallback(tick) : requestAnimationFrame(tick);
 }
 
-function stopCamera(message = sceneFailed ? 'Illustrated scene could not load.' : 'Illustrated scene') {
+function illustrationStatus() {
+  const scene = scenes[currentLanguage];
+  return scene.src && scene.complete && !scene.naturalWidth ? 'illustrationFailed' : 'illustrated';
+}
+
+function stopCamera(message = illustrationStatus()) {
   request++;
   pending = false;
   cancelFrame();
   camera?.getTracks().forEach(track => track.stop());
   camera = null;
   video.srcObject = null;
-  buttonText.textContent = 'Use my camera';
-  status.textContent = message;
+  showCameraStatus(message, 'useCamera');
   render();
 }
 
 async function toggleCamera() {
   if (camera || pending) return stopCamera();
   if (!navigator.mediaDevices?.getUserMedia) {
-    stopCamera(isSecureContext ? 'This browser doesn’t provide camera access.' : 'Open the HTTPS site to use your camera.');
+    stopCamera(isSecureContext ? 'unavailableBrowser' : 'secureCamera');
     return;
   }
   const attempt = ++request;
   pending = true;
-  buttonText.textContent = 'Cancel camera';
-  status.textContent = 'Waiting for camera permission…';
+  showCameraStatus('permission', 'cancelCamera');
   try {
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: false,
@@ -164,34 +176,43 @@ async function toggleCamera() {
     camera = stream;
     stream.getVideoTracks().forEach(track => {
       track.addEventListener('ended', () => {
-        if (camera === stream) stopCamera('Camera disconnected. Showing the illustrated scene.');
+        if (camera === stream) stopCamera('disconnected');
       });
     });
-    status.textContent = 'Starting camera…';
+    showCameraStatus('starting');
     video.srcObject = stream;
     await video.play();
     if (attempt !== request) return;
     pending = false;
-    buttonText.textContent = 'Stop camera';
-    status.textContent = 'Live camera · Both views use the same feed';
+    showCameraStatus('liveCamera', 'stopCamera');
     tick();
   } catch (error) {
     if (attempt !== request) return;
     const messages = {
-      NotAllowedError: 'Camera blocked. Allow access in your browser to try again.',
-      NotFoundError: 'No camera found. You can use the illustrated scene.',
-      NotReadableError: 'Camera unavailable. Close other apps using it and try again.',
+      NotAllowedError: 'denied',
+      NotFoundError: 'notFound',
+      NotReadableError: 'busy',
     };
-    stopCamera(messages[error.name] || 'Couldn’t start the camera. Showing the illustrated scene.');
+    stopCamera(messages[error.name] || 'cameraFailed');
   }
 }
 
-scene.onload = render;
-scene.onerror = () => {
-  sceneFailed = true;
-  if (!camera && !pending) status.textContent = 'Illustrated scene could not load. You can still try your camera.';
-};
-scene.src = './scene.svg';
+function changeLanguage(language) {
+  applyLanguage(language);
+  const scene = scenes[currentLanguage];
+  if (!scene.src) {
+    scene.onload = render;
+    scene.onerror = () => {
+      if (scene === scenes[currentLanguage] && cameraStatus === 'illustrated') {
+        showCameraStatus('illustrationFailed');
+      }
+    };
+    scene.src = currentLanguage === 'mr' ? './scene-mr.svg' : './scene.svg';
+  }
+  const showingIllustration = cameraStatus === 'illustrated' || cameraStatus === 'illustrationFailed';
+  showCameraStatus(showingIllustration ? illustrationStatus() : cameraStatus);
+  update();
+}
 
 document.querySelector('.controls').addEventListener('change', event => {
   if (event.target.name === 'stage') {
@@ -209,4 +230,12 @@ document.querySelector('#privacy-link').addEventListener('click', () => {
 });
 button.addEventListener('click', toggleCamera);
 window.addEventListener('pagehide', () => stopCamera());
-update();
+for (const toggle of languageButtons) {
+  toggle.addEventListener('click', () => {
+    const url = new URL(location.href);
+    url.searchParams.set('lang', toggle.dataset.language);
+    history.replaceState(null, '', url);
+    changeLanguage(toggle.dataset.language);
+  });
+}
+changeLanguage(new URLSearchParams(location.search).get('lang'));
