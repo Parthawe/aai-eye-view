@@ -58,6 +58,7 @@ let nativeFullscreen = false;
 let launchedFromStart = false;
 let controlsHideTimer;
 let adjustingWithPointer = false;
+let usingKeyboard = false;
 const CONTROLS_IDLE_MS = 5000;
 const savedControls = [...document.querySelectorAll('input[type=range], input[type=radio]:not([name=stage]), #keep-controls')];
 
@@ -123,7 +124,8 @@ function restartControlsTimer() {
       viewer.classList.contains('controls-hidden')) return;
   const focusedControl = document.activeElement;
   if (viewer.contains(focusedControl) &&
-      focusedControl.matches('button:not(.eye-toggle):focus-visible, input:focus-visible, a:focus-visible, summary:focus-visible')) return;
+      focusedControl.matches('button:not(.eye-toggle), input, a, summary') &&
+      (usingKeyboard || focusedControl.matches(':focus-visible'))) return;
   controlsHideTimer = setTimeout(() => setControlsHidden(true), CONTROLS_IDLE_MS);
 }
 
@@ -446,8 +448,13 @@ document.querySelector('#start-camera').addEventListener('click', () => {
 });
 fullScreenButton.addEventListener('click', toggleFullScreen);
 viewer.addEventListener('pointerdown', () => {
+  usingKeyboard = false;
   adjustingWithPointer = true;
   clearTimeout(controlsHideTimer);
+});
+viewer.addEventListener('keydown', () => {
+  usingKeyboard = true;
+  restartControlsTimer();
 });
 for (const eventName of ['pointerup', 'pointercancel']) {
   window.addEventListener(eventName, () => {
@@ -481,6 +488,9 @@ closeAdjustmentsButton.addEventListener('click', () => adjustments.close());
 adjustments.addEventListener('close', () => {
   viewer.classList.remove('show-adjustments');
   adjustButton.setAttribute('aria-expanded', 'false');
+  if (viewer.classList.contains('is-expanded') || !phoneLayout.matches) {
+    adjustButton.focus({ preventScroll: true });
+  }
   restartControlsTimer();
 });
 for (const stepButton of stepButtons) {
