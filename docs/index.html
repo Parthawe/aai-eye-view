@@ -7,9 +7,9 @@
   <meta name="description" content="A tribute to Mom and an interactive illustration of how vision can differ between two eyes.">
   <title>Aai | A view through two eyes</title>
   <link rel="icon" href="./mark.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="./style.css?v=accessible-controls">
-  <script src="./language.js?v=accessible-controls" defer></script>
-  <script src="./app.js?v=accessible-controls" defer></script>
+  <link rel="stylesheet" href="./style.css?v=accessibility-first">
+  <script src="./language.js?v=accessibility-first" defer></script>
+  <script src="./app.js?v=accessibility-first" defer></script>
 </head>
 <body>
   <header class="masthead wrap">
@@ -114,8 +114,13 @@
             <label><input type="radio" name="pattern" value="circle"><span data-copy="round">Round spot</span></label>
           </div>
         </fieldset>
-
-
+        <fieldset class="accessibility-settings">
+          <legend data-copy="accessibility">Accessibility</legend>
+          <label class="check-control" for="keep-controls">
+            <input id="keep-controls" type="checkbox">
+            <span data-copy="keepControls">Keep controls visible</span>
+          </label>
+        </fieldset>
       </div>
       <p class="view-note" data-copy="viewNote">An illustration based on her description.</p>
       <video id="video" muted playsinline hidden></video>

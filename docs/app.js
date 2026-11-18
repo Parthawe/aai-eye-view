@@ -9,6 +9,7 @@ const viewer = document.querySelector('#viewer');
 const fullScreenButton = document.querySelector('#fullscreen');
 const fullScreenLabel = fullScreenButton.querySelector('span');
 const adjustButton = document.querySelector('#viewer-adjust');
+const keepControls = document.querySelector('#keep-controls');
 const surroundingPage = document.querySelectorAll('.masthead, .camera-launch, .info-panel, .footer');
 const phoneLayout = matchMedia('(max-width: 760px), (pointer: coarse) and (max-width: 1050px)');
 const spotSize = document.querySelector('#spot-size');
@@ -55,12 +56,13 @@ let launchedFromStart = false;
 let controlsHideTimer;
 let adjustingWithPointer = false;
 const CONTROLS_IDLE_MS = 5000;
-const savedControls = [...document.querySelectorAll('input[type=range], input[type=radio]:not([name=stage])')];
+const savedControls = [...document.querySelectorAll('input[type=range], input[type=radio]:not([name=stage]), #keep-controls')];
 
 function saveSettings() {
   const settings = {};
   for (const input of savedControls) {
-    if (input.type === 'range') settings[input.id] = input.value;
+    if (input.type === 'checkbox') settings[input.id] = input.checked;
+    else if (input.type === 'range') settings[input.id] = input.value;
     else if (input.checked) settings[input.name] = input.value;
   }
   try {
@@ -75,7 +77,9 @@ function restoreSettings() {
     const settings = JSON.parse(localStorage.getItem('aai-view-settings')) || {};
     for (const input of savedControls) {
       const value = settings[input.id || input.name];
-      if (input.type === 'range') {
+      if (input.type === 'checkbox') {
+        if (typeof value === 'boolean') input.checked = value;
+      } else if (input.type === 'range') {
         if (typeof value === 'string' && Number.isFinite(Number(value))) input.value = value;
       } else if (typeof value === 'string') {
         const valid = savedControls.some(candidate => candidate.name === input.name && candidate.value === value);
@@ -96,7 +100,7 @@ function updateFullScreenLabel() {
 
 function restartControlsTimer() {
   clearTimeout(controlsHideTimer);
-  if (adjustingWithPointer || !camera || pending ||
+  if (keepControls.checked || adjustingWithPointer || !camera || pending ||
       !viewer.classList.contains('is-expanded') ||
       viewer.classList.contains('controls-hidden')) return;
   const focusedControl = document.activeElement;
@@ -145,7 +149,7 @@ function setExpanded(expanded) {
   const focusTarget = !expanded && phoneLayout.matches ?
     document.querySelector('#start-camera') : fullScreenButton;
   focusTarget.focus({ preventScroll: true });
-  setControlsHidden(expanded && !!camera && !pending);
+  setControlsHidden(expanded && !!camera && !pending && !keepControls.checked);
 }
 
 async function toggleFullScreen() {
@@ -327,7 +331,7 @@ async function toggleCamera() {
     pending = false;
     showCameraStatus('liveCamera', 'stopCamera');
     tick();
-    setControlsHidden(viewer.classList.contains('is-expanded'));
+    setControlsHidden(viewer.classList.contains('is-expanded') && !keepControls.checked);
   } catch (error) {
     if (attempt !== request) return;
     const messages = {

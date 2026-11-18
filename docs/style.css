@@ -451,3 +451,26 @@ body.viewer-expanded { overflow: hidden; }
   outline-offset: -8px;
   border: 3px solid var(--ink);
 }
+
+.accessibility-settings { grid-column: 1 / -1; }
+.check-control {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 64px;
+  width: fit-content;
+  max-width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  font-size: 1.25rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+.check-control input {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  margin: 0;
+  accent-color: var(--rust);
+}
+.check-control:focus-within { outline: 3px solid var(--rust); outline-offset: 3px; }

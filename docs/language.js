@@ -2,6 +2,8 @@
 
 const marathiCopy = {
   brand: "आई",
+  accessibility: "वापरणं सोपं करा",
+  keepControls: "नियंत्रणं दिसत राहू द्या",
   viewerHelp: "नियंत्रणं दाखवण्यासाठी किंवा लपवण्यासाठी चित्राला स्पर्श करा किंवा एंटर दाबा.",
   startCamera: "कॅमेरा सुरू करा",
   info: "माहिती",
