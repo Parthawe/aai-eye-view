@@ -19,6 +19,7 @@ const stageInputs = document.querySelectorAll('[name=stage]');
 const eyes = ['left', 'right'].map(side => ({
   side,
   canvas: document.getElementById(side),
+  toggle: document.getElementById(side + '-toggle'),
   label: document.getElementById(side + '-label'),
   blur: document.getElementById(side + '-blur'),
   blurLevel: document.getElementById(side + '-blur-level'),
@@ -100,19 +101,33 @@ function restartControlsTimer() {
       viewer.classList.contains('controls-hidden')) return;
   const focusedControl = document.activeElement;
   if (viewer.contains(focusedControl) &&
-      focusedControl.matches('button:focus-visible, input:focus-visible, a:focus-visible, summary:focus-visible')) return;
+      focusedControl.matches('button:not(.eye-toggle):focus-visible, input:focus-visible, a:focus-visible, summary:focus-visible')) return;
   controlsHideTimer = setTimeout(() => setControlsHidden(true), CONTROLS_IDLE_MS);
 }
 
 function setControlsHidden(hidden) {
   clearTimeout(controlsHideTimer);
   viewer.classList.toggle('controls-hidden', hidden);
+  updateEyeControls();
   if (hidden) {
     viewer.classList.remove('show-adjustments');
     adjustButton.setAttribute('aria-expanded', 'false');
-    eyes[0].canvas.focus({ preventScroll: true });
+    eyes[0].toggle.focus({ preventScroll: true });
   } else {
     restartControlsTimer();
+  }
+}
+
+function updateEyeControls() {
+  const active = !!camera && !pending && viewer.classList.contains('is-expanded');
+  const expanded = !viewer.classList.contains('controls-hidden');
+  const words = localized[currentLanguage];
+  for (const eye of eyes) {
+    eye.toggle.hidden = !active;
+    eye.toggle.setAttribute('aria-expanded', String(expanded));
+    const action = expanded ? words.hideControls : words.showControls;
+    eye.toggle.setAttribute('aria-label', eye.canvas.getAttribute('aria-label') + ' ' + action);
+    eye.canvas.setAttribute('aria-hidden', String(active));
   }
 }
 
@@ -192,6 +207,7 @@ function update() {
     eye.canvas.setAttribute('aria-label', words.eyeDescription(copy(eye.side + 'Eye'), label, glasses));
     eye.canvas.removeAttribute('aria-labelledby');
   }
+  updateEyeControls();
   render();
 }
 
@@ -387,12 +403,10 @@ viewer.addEventListener('click', event => {
   setControlsHidden(!viewer.classList.contains('controls-hidden'));
 });
 for (const eye of eyes) {
-  eye.canvas.tabIndex = 0;
-  eye.canvas.addEventListener('keydown', event => {
-    if ((event.key === 'Enter' || event.key === ' ') && camera && viewer.classList.contains('is-expanded')) {
-      event.preventDefault();
-      setControlsHidden(!viewer.classList.contains('controls-hidden'));
-      if (!viewer.classList.contains('controls-hidden')) fullScreenButton.focus({ preventScroll: true });
+  eye.toggle.addEventListener('click', event => {
+    setControlsHidden(!viewer.classList.contains('controls-hidden'));
+    if (event.detail === 0 && !viewer.classList.contains('controls-hidden')) {
+      fullScreenButton.focus({ preventScroll: true });
     }
   });
 }

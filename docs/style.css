@@ -433,3 +433,21 @@ body.viewer-expanded { overflow: hidden; }
   .segments input:checked + span { outline: 3px solid Highlight; }
   .language-switch button[aria-pressed="true"] { outline: 3px solid Highlight; }
 }
+
+.eye-toggle:not([hidden]) {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.eye-toggle:focus-visible {
+  outline: 4px solid var(--paper);
+  outline-offset: -8px;
+  border: 3px solid var(--ink);
+}

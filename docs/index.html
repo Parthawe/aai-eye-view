@@ -7,9 +7,9 @@
   <meta name="description" content="A tribute to Mom and an interactive illustration of how vision can differ between two eyes.">
   <title>Aai | A view through two eyes</title>
   <link rel="icon" href="./mark.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="./style.css?v=readable">
-  <script src="./language.js?v=readable" defer></script>
-  <script src="./app.js?v=readable" defer></script>
+  <link rel="stylesheet" href="./style.css?v=accessible-controls">
+  <script src="./language.js?v=accessible-controls" defer></script>
+  <script src="./app.js?v=accessible-controls" defer></script>
 </head>
 <body>
   <header class="masthead wrap">
@@ -30,7 +30,7 @@
     <section class="viewer" id="viewer" aria-labelledby="viewer-title">
       <div class="viewer-heading">
         <h1 id="viewer-title" data-copy="viewerTitle">Through her eyes</h1>
-        <div class="viewer-actions">
+        <div class="viewer-actions" id="viewer-controls">
         <fieldset class="quick-glasses">
           <legend data-copy="glasses">Glasses</legend>
           <div class="segments">
@@ -42,7 +42,7 @@
             <svg width="19" height="16" viewBox="0 0 20 16" fill="none" aria-hidden="true"><rect x="1" y="3" width="12" height="10" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="m13 6 5-2v8l-5-2" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
             <span>Use my camera</span>
           </button>
-          <button id="viewer-adjust" class="viewer-button" type="button" aria-expanded="false" data-copy="adjustView">Adjust</button>
+          <button id="viewer-adjust" class="viewer-button" type="button" aria-expanded="false" aria-controls="left-blur right-blur spot-adjustments advanced-controls quick-presets" data-copy="adjustView">Adjust</button>
           <button id="fullscreen" class="viewer-button" type="button" aria-pressed="false">
             <svg width="17" height="17" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 7V3h4m6 0h4v4m0 6v4h-4m-6 0H3v-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <span>Full screen</span>
@@ -57,7 +57,7 @@
       <div class="eyes">
         <figure>
           <figcaption><strong data-copy="leftEye">Left eye</strong><span id="left-label" class="affected">Right side dark</span></figcaption>
-          <div class="eye-frame"><canvas id="left" width="640" height="640" aria-labelledby="left-label" role="img" aria-describedby="viewer-help"></canvas><i class="reticle" aria-hidden="true"></i></div>
+          <div class="eye-frame"><canvas id="left" width="640" height="640" aria-labelledby="left-label" role="img" aria-describedby="viewer-help"></canvas><i class="reticle" aria-hidden="true"></i><button id="left-toggle" class="eye-toggle" type="button" aria-controls="viewer-controls" hidden></button></div>
           <div class="range-control">
             <div class="range-heading"><label for="left-blur" data-copy="leftBlur">Left eye blur</label><output id="left-blur-level" for="left-blur">2 / 5</output></div>
             <input id="left-blur" type="range" min="0" max="5" step="1" value="2">
@@ -66,7 +66,7 @@
         </figure>
         <figure>
           <figcaption><strong data-copy="rightEye">Right eye</strong><span id="right-label">Moderate blur</span></figcaption>
-          <div class="eye-frame"><canvas id="right" width="640" height="640" aria-labelledby="right-label" role="img" aria-describedby="viewer-help"></canvas><i class="reticle" aria-hidden="true"></i></div>
+          <div class="eye-frame"><canvas id="right" width="640" height="640" aria-labelledby="right-label" role="img" aria-describedby="viewer-help"></canvas><i class="reticle" aria-hidden="true"></i><button id="right-toggle" class="eye-toggle" type="button" aria-controls="viewer-controls" hidden></button></div>
           <div class="range-control">
             <div class="range-heading"><label for="right-blur" data-copy="rightBlur">Right eye blur</label><output id="right-blur-level" for="right-blur">2 / 5</output></div>
             <input id="right-blur" type="range" min="0" max="5" step="1" value="2">
@@ -78,7 +78,7 @@
         <p id="camera-status" role="status">Illustrated scene</p>
         <p id="camera-note" data-copy="cameraNote">Video stays on your phone.</p>
       </div>
-      <fieldset class="progression quick-presets">
+      <fieldset class="progression quick-presets" id="quick-presets">
           <legend class="sr-only" data-copy="progression">Effect presets</legend>
           <div class="segments">
             <label><input type="radio" name="stage" value="0"><span data-copy="presetNone">None</span></label>
@@ -87,7 +87,7 @@
             <label><input type="radio" name="stage" value="3" checked><span data-copy="presetStronger">Strong</span></label>
           </div>
         </fieldset>
-      <div class="spot-adjustments">
+      <div class="spot-adjustments" id="spot-adjustments">
         <div class="range-control">
           <div class="range-heading"><label for="spot-size" data-copy="spotSize">Dark area width</label><output id="spot-size-value" for="spot-size">50%</output></div>
           <input id="spot-size" type="range" min="0" max="100" step="1" value="50">
@@ -99,7 +99,7 @@
           <div class="range-scale" aria-hidden="true"><span data-copy="spotDarknessMin">0% Clear</span><span data-copy="spotDarknessMax">100% Black</span></div>
         </div>
       </div>
-      <div class="controls">
+      <div class="controls" id="advanced-controls">
         <fieldset>
           <legend data-copy="spotSide">Eye with the dark area</legend>
           <div class="segments">

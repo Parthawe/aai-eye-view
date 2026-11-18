@@ -56,6 +56,8 @@ const marathiCopy = {
 const localized = {
   en: {
     cameraLaunch: 'Camera',
+    showControls: 'Show controls',
+    hideControls: 'Hide controls',
     home: 'Aai home',
     mainNav: 'Main',
     languageLabel: 'Site language',
@@ -88,6 +90,8 @@ const localized = {
   },
   mr: {
     cameraLaunch: 'कॅमेरा',
+    showControls: 'नियंत्रणं दाखवा',
+    hideControls: 'नियंत्रणं लपवा',
     home: 'आईचे मुख्यपृष्ठ',
     mainNav: 'मुख्य दुवे',
     languageLabel: 'साइटची भाषा',
