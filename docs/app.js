@@ -9,6 +9,9 @@ const viewer = document.querySelector('#viewer');
 const fullScreenButton = document.querySelector('#fullscreen');
 const fullScreenLabel = fullScreenButton.querySelector('span');
 const adjustButton = document.querySelector('#viewer-adjust');
+const adjustments = document.querySelector('#adjustments');
+const closeAdjustmentsButton = document.querySelector('#close-adjustments');
+const stepButtons = document.querySelectorAll('[data-step-target]');
 const keepControls = document.querySelector('#keep-controls');
 const surroundingPage = document.querySelectorAll('.masthead, .camera-launch, .info-panel, .footer');
 const phoneLayout = matchMedia('(max-width: 760px), (pointer: coarse) and (max-width: 1050px)');
@@ -115,7 +118,7 @@ function fitEyeViews() {
 
 function restartControlsTimer() {
   clearTimeout(controlsHideTimer);
-  if (keepControls.checked || adjustingWithPointer || !camera || pending ||
+  if (adjustments.open || keepControls.checked || adjustingWithPointer || !camera || pending ||
       !viewer.classList.contains('is-expanded') ||
       viewer.classList.contains('controls-hidden')) return;
   const focusedControl = document.activeElement;
@@ -125,6 +128,7 @@ function restartControlsTimer() {
 }
 
 function setControlsHidden(hidden) {
+  hidden = hidden && !adjustments.open;
   clearTimeout(controlsHideTimer);
   viewer.classList.toggle('controls-hidden', hidden);
   updateEyeControls();
@@ -156,6 +160,7 @@ function setExpanded(expanded) {
   document.body.classList.toggle('viewer-expanded', expanded);
   for (const section of surroundingPage) section.inert = expanded;
   if (!expanded) {
+    if (adjustments.open) adjustments.close();
     viewer.classList.remove('show-adjustments');
     adjustButton.setAttribute('aria-expanded', 'false');
     if (launchedFromStart || phoneLayout.matches) stopCamera();
@@ -230,6 +235,13 @@ function update() {
     eye.canvas.toggleAttribute('data-blank', level === 5);
     eye.canvas.setAttribute('aria-label', words.eyeDescription(copy(eye.side + 'Eye'), label, glasses));
     eye.canvas.removeAttribute('aria-labelledby');
+  }
+  for (const stepButton of stepButtons) {
+    const input = document.getElementById(stepButton.dataset.stepTarget);
+    const increase = stepButton.dataset.direction === '1';
+    stepButton.setAttribute('aria-label', words.changeValue(copy(input.labels[0].dataset.copy), increase));
+    stepButton.disabled = increase ?
+      input.valueAsNumber >= Number(input.max) : input.valueAsNumber <= Number(input.min);
   }
   updateEyeControls();
   fitEyeViews();
@@ -309,7 +321,8 @@ function illustrationStatus() {
   return scene.src && scene.complete && !scene.naturalWidth ? 'illustrationFailed' : 'illustrated';
 }
 
-function stopCamera(message = illustrationStatus()) {
+function stopCamera(message = illustrationStatus(), keepAdjustmentsOpen = false) {
+  if (adjustments.open && !keepAdjustmentsOpen) adjustments.close();
   request++;
   pending = false;
   cancelFrame();
@@ -400,7 +413,7 @@ viewer.addEventListener('change', event => {
   update();
   saveSettings();
   if (event.target.name === 'facing' && (camera || pending)) {
-    stopCamera();
+    stopCamera(illustrationStatus(), true);
     toggleCamera();
   }
 });
@@ -447,7 +460,7 @@ for (const eventName of ['click', 'input', 'keydown', 'keyup', 'focusin', 'focus
 }
 viewer.addEventListener('click', event => {
   if (!camera || !viewer.classList.contains('is-expanded')) return;
-  if (event.target.closest('button, input, label, a, summary, .viewer-heading, .range-control, .controls, .quick-presets')) return;
+  if (event.target.closest('button, input, label, a, summary, dialog, .viewer-heading, .range-control, .controls, .quick-presets')) return;
   setControlsHidden(!viewer.classList.contains('controls-hidden'));
 });
 for (const eye of eyes) {
@@ -459,16 +472,31 @@ for (const eye of eyes) {
   });
 }
 adjustButton.addEventListener('click', () => {
-  const open = viewer.classList.toggle('show-adjustments');
-  adjustButton.setAttribute('aria-expanded', String(open));
+  clearTimeout(controlsHideTimer);
+  viewer.classList.add('show-adjustments');
+  adjustButton.setAttribute('aria-expanded', 'true');
+  adjustments.showModal();
 });
+closeAdjustmentsButton.addEventListener('click', () => adjustments.close());
+adjustments.addEventListener('close', () => {
+  viewer.classList.remove('show-adjustments');
+  adjustButton.setAttribute('aria-expanded', 'false');
+  restartControlsTimer();
+});
+for (const stepButton of stepButtons) {
+  stepButton.addEventListener('click', () => {
+    const input = document.getElementById(stepButton.dataset.stepTarget);
+    input.stepUp(Number(stepButton.dataset.direction));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  });
+}
 document.addEventListener('fullscreenchange', () => {
   const previous = nativeFullscreen;
   nativeFullscreen = document.fullscreenElement === viewer;
   if (previous && !nativeFullscreen) setExpanded(false);
 });
 document.addEventListener('keydown', event => {
-  if (event.key === 'Escape' && !document.fullscreenElement && viewer.classList.contains('is-expanded')) {
+  if (event.key === 'Escape' && !adjustments.open && !document.fullscreenElement && viewer.classList.contains('is-expanded')) {
     setExpanded(false);
   }
 });

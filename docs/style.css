@@ -490,3 +490,65 @@ body.viewer-expanded { overflow: hidden; }
 @media (orientation: landscape) {
   .viewer.is-expanded .viewer-actions { justify-content: space-between; }
 }
+
+.adjust-panel {
+  position: fixed;
+  width: min(calc(100% - 24px), 48rem);
+  max-width: none;
+  max-height: calc(100dvh - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  margin: auto auto max(12px, env(safe-area-inset-bottom));
+  padding: 0;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  background: var(--paper);
+  color: var(--ink);
+  overflow: hidden;
+}
+.adjust-panel[open] { display: flex; flex-direction: column; }
+.adjust-panel::backdrop { background: rgb(0 0 0 / .5); }
+.adjust-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: none;
+  gap: 14px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--rule);
+}
+.adjust-panel-header h2 { font-size: 1.75rem; }
+.adjust-panel-header button { flex: none; }
+.adjust-panel-body {
+  padding: 8px 18px 24px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+.blur-adjustments { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.adjust-panel .range-control { padding-block: 18px 12px; }
+.adjust-panel .range-heading { align-items: center; }
+.adjust-panel .range-heading label { font-size: 1.25rem; }
+.adjust-panel .range-heading output { font-size: 1.75rem; font-weight: 700; color: var(--ink); }
+.slider-stepper {
+  display: grid;
+  grid-template-columns: 56px minmax(40px, 1fr) 56px;
+  align-items: center;
+  gap: 14px;
+  margin-block: 8px;
+}
+.step-button {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  padding: 0;
+  border: 2px solid var(--border);
+  background: var(--paper);
+  color: var(--ink);
+}
+.step-button:hover:not(:disabled) { background: #eadcca; }
+.step-button:disabled { color: var(--muted); border-style: dashed; cursor: default; }
+.step-button:active:not(:disabled) { background: var(--ink); color: var(--paper); }
+@media (max-width: 580px) {
+  .blur-adjustments { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .adjust-panel-header h2 { font-size: 1.5rem; }
+}

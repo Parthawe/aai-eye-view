@@ -2,6 +2,8 @@
 
 const marathiCopy = {
   brand: "आई",
+  adjustTitle: "दृश्य बदला",
+  done: "झालं",
   cameraChoice: "कॅमेरा",
   backCamera: "मागचा",
   frontCamera: "पुढचा",
@@ -61,6 +63,7 @@ const marathiCopy = {
 
 const localized = {
   en: {
+    changeValue: (label, increase) => (increase ? 'Increase ' : 'Decrease ') + label.toLowerCase(),
     viewReset: 'View reset.',
     cameraFallback: 'Selected camera unavailable. Using the available camera.',
     cameraLaunch: 'Camera',
@@ -97,6 +100,7 @@ const localized = {
     cameraFailed: 'Couldn’t start the camera. Showing the illustrated scene.',
   },
   mr: {
+    changeValue: (label, increase) => label + (increase ? ' वाढवा' : ' कमी करा'),
     viewReset: 'मूळ दृश्य पुन्हा लावलं.',
     cameraFallback: 'निवडलेला कॅमेरा उपलब्ध नाही. उपलब्ध कॅमेरा वापरत आहोत.',
     cameraLaunch: 'कॅमेरा',
