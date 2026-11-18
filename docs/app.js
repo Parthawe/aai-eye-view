@@ -11,6 +11,8 @@ const fullScreenLabel = fullScreenButton.querySelector('span');
 const adjustButton = document.querySelector('#viewer-adjust');
 const adjustments = document.querySelector('#adjustments');
 const closeAdjustmentsButton = document.querySelector('#close-adjustments');
+const helpDialog = document.querySelector('#help-dialog');
+let helpOpener;
 const stepButtons = document.querySelectorAll('[data-step-target]');
 const keepControls = document.querySelector('#keep-controls');
 const surroundingPage = document.querySelectorAll('.masthead, .camera-launch, .info-panel, .footer');
@@ -119,7 +121,7 @@ function fitEyeViews() {
 
 function restartControlsTimer() {
   clearTimeout(controlsHideTimer);
-  if (adjustments.open || keepControls.checked || adjustingWithPointer || !camera || pending ||
+  if (helpDialog.open || adjustments.open || keepControls.checked || adjustingWithPointer || !camera || pending ||
       !viewer.classList.contains('is-expanded') ||
       viewer.classList.contains('controls-hidden')) return;
   const focusedControl = document.activeElement;
@@ -130,7 +132,7 @@ function restartControlsTimer() {
 }
 
 function setControlsHidden(hidden) {
-  hidden = hidden && !adjustments.open;
+  hidden = hidden && !adjustments.open && !helpDialog.open;
   clearTimeout(controlsHideTimer);
   viewer.classList.toggle('controls-hidden', hidden);
   updateEyeControls();
@@ -162,6 +164,7 @@ function setExpanded(expanded) {
   document.body.classList.toggle('viewer-expanded', expanded);
   for (const section of surroundingPage) section.inert = expanded;
   if (!expanded) {
+    if (helpDialog.open) helpDialog.close();
     if (adjustments.open) adjustments.close();
     viewer.classList.remove('show-adjustments');
     adjustButton.setAttribute('aria-expanded', 'false');
@@ -324,6 +327,7 @@ function illustrationStatus() {
 }
 
 function stopCamera(message = illustrationStatus(), keepAdjustmentsOpen = false) {
+  if (helpDialog.open) helpDialog.close();
   if (adjustments.open && !keepAdjustmentsOpen) adjustments.close();
   request++;
   pending = false;
@@ -485,6 +489,22 @@ adjustButton.addEventListener('click', () => {
   adjustments.showModal();
 });
 closeAdjustmentsButton.addEventListener('click', () => adjustments.close());
+for (const helpButton of document.querySelectorAll('[data-open-help]')) {
+  helpButton.addEventListener('click', () => {
+    clearTimeout(controlsHideTimer);
+    helpOpener = helpButton;
+    const parent = viewer.classList.contains('is-expanded') ? viewer : document.body;
+    parent.append(helpDialog);
+    helpDialog.showModal();
+  });
+}
+document.querySelector('#close-help').addEventListener('click', () => helpDialog.close());
+helpDialog.addEventListener('close', () => {
+  if (helpOpener?.getClientRects().length && !helpOpener.closest('[inert]')) {
+    helpOpener.focus({ preventScroll: true });
+  }
+  restartControlsTimer();
+});
 adjustments.addEventListener('close', () => {
   viewer.classList.remove('show-adjustments');
   adjustButton.setAttribute('aria-expanded', 'false');
@@ -506,7 +526,7 @@ document.addEventListener('fullscreenchange', () => {
   if (previous && !nativeFullscreen) setExpanded(false);
 });
 document.addEventListener('keydown', event => {
-  if (event.key === 'Escape' && !adjustments.open && !document.fullscreenElement && viewer.classList.contains('is-expanded')) {
+  if (event.key === 'Escape' && !helpDialog.open && !adjustments.open && !document.fullscreenElement && viewer.classList.contains('is-expanded')) {
     setExpanded(false);
   }
 });
