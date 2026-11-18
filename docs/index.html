@@ -7,9 +7,9 @@
   <meta name="description" content="A tribute to Mom and an interactive illustration of how vision can differ between two eyes.">
   <title>Aai | A view through two eyes</title>
   <link rel="icon" href="./mark.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="./style.css?v=idle">
-  <script src="./language.js?v=idle" defer></script>
-  <script src="./app.js?v=idle" defer></script>
+  <link rel="stylesheet" href="./style.css?v=glasses">
+  <script src="./language.js?v=glasses" defer></script>
+  <script src="./app.js?v=glasses" defer></script>
 </head>
 <body>
   <header class="masthead wrap">
@@ -30,6 +30,13 @@
       <div class="viewer-heading">
         <h1 id="viewer-title" data-copy="viewerTitle">Through her eyes</h1>
         <div class="viewer-actions">
+        <fieldset class="quick-glasses">
+          <legend data-copy="glasses">Glasses</legend>
+          <div class="segments">
+            <label><input type="radio" name="glasses" value="off" checked><span data-copy="off">Off</span></label>
+            <label><input type="radio" name="glasses" value="on"><span data-copy="on">On</span></label>
+          </div>
+        </fieldset>
           <button id="camera" class="viewer-button primary" type="button" aria-describedby="camera-note">
             <svg width="19" height="16" viewBox="0 0 20 16" fill="none" aria-hidden="true"><rect x="1" y="3" width="12" height="10" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="m13 6 5-2v8l-5-2" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
             <span>Use my camera</span>
@@ -57,11 +64,11 @@
           </div>
         </figure>
         <figure>
-          <figcaption><strong data-copy="rightEye">Right eye</strong><span id="right-label">Slight blur</span></figcaption>
+          <figcaption><strong data-copy="rightEye">Right eye</strong><span id="right-label">Moderate blur</span></figcaption>
           <div class="eye-frame"><canvas id="right" width="640" height="640" aria-labelledby="right-label" role="img"></canvas><i class="reticle" aria-hidden="true"></i></div>
           <div class="range-control">
-            <div class="range-heading"><label for="right-blur" data-copy="rightBlur">Right eye blur</label><output id="right-blur-level" for="right-blur">1 / 5</output></div>
-            <input id="right-blur" type="range" min="0" max="5" step="1" value="1">
+            <div class="range-heading"><label for="right-blur" data-copy="rightBlur">Right eye blur</label><output id="right-blur-level" for="right-blur">2 / 5</output></div>
+            <input id="right-blur" type="range" min="0" max="5" step="1" value="2">
             <div class="range-scale" aria-hidden="true"><span data-copy="blurMin">0 Sharp</span><span data-copy="blurMax">5 No detail</span></div>
           </div>
         </figure>
@@ -107,14 +114,7 @@
           </div>
         </fieldset>
 
-        <fieldset>
-          <legend data-copy="glasses">Glasses</legend>
-          <div class="segments">
-            <label><input type="radio" name="glasses" value="off" checked><span data-copy="off">Off</span></label>
-            <label><input type="radio" name="glasses" value="on"><span data-copy="on">On</span></label>
-          </div>
-          <p data-copy="focusHint">Compare focus.</p>
-        </fieldset>
+
       </div>
       <p class="view-note" data-copy="viewNote">An illustration based on her description.</p>
       <video id="video" muted playsinline hidden></video>

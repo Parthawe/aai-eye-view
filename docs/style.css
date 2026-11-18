@@ -366,3 +366,18 @@ body.viewer-expanded { overflow: hidden; }
 .is-expanded.controls-hidden .reticle { display: none; }
 .is-expanded.controls-hidden .eye-frame { border: 0; }
 .is-expanded .eye-frame { cursor: pointer; }
+
+.quick-glasses {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.quick-glasses legend {
+  float: left;
+  margin: 0;
+  padding: 0;
+  align-self: center;
+}
+.quick-glasses .segments { flex-wrap: nowrap; }
+.quick-glasses .segments span { min-height: 44px; }
+.controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
