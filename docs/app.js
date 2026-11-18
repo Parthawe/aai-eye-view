@@ -98,6 +98,9 @@ function restartControlsTimer() {
   if (adjustingWithPointer || !camera || pending ||
       !viewer.classList.contains('is-expanded') ||
       viewer.classList.contains('controls-hidden')) return;
+  const focusedControl = document.activeElement;
+  if (viewer.contains(focusedControl) &&
+      focusedControl.matches('button:focus-visible, input:focus-visible, a:focus-visible, summary:focus-visible')) return;
   controlsHideTimer = setTimeout(() => setControlsHidden(true), CONTROLS_IDLE_MS);
 }
 
@@ -375,7 +378,7 @@ for (const eventName of ['pointerup', 'pointercancel']) {
     restartControlsTimer();
   });
 }
-for (const eventName of ['click', 'input', 'keydown', 'keyup']) {
+for (const eventName of ['click', 'input', 'keydown', 'keyup', 'focusin', 'focusout']) {
   viewer.addEventListener(eventName, restartControlsTimer);
 }
 viewer.addEventListener('click', event => {

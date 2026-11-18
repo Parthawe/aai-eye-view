@@ -7,9 +7,9 @@
   <meta name="description" content="A tribute to Mom and an interactive illustration of how vision can differ between two eyes.">
   <title>Aai | A view through two eyes</title>
   <link rel="icon" href="./mark.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="./style.css?v=glasses">
-  <script src="./language.js?v=glasses" defer></script>
-  <script src="./app.js?v=glasses" defer></script>
+  <link rel="stylesheet" href="./style.css?v=readable">
+  <script src="./language.js?v=readable" defer></script>
+  <script src="./app.js?v=readable" defer></script>
 </head>
 <body>
   <header class="masthead wrap">
@@ -26,6 +26,7 @@
         <span data-copy="startCamera">Start camera</span>
       </button>
     </section>
+    <p id="viewer-help" class="sr-only" data-copy="viewerHelp">Tap either image or press Enter to show or hide controls.</p>
     <section class="viewer" id="viewer" aria-labelledby="viewer-title">
       <div class="viewer-heading">
         <h1 id="viewer-title" data-copy="viewerTitle">Through her eyes</h1>
@@ -56,7 +57,7 @@
       <div class="eyes">
         <figure>
           <figcaption><strong data-copy="leftEye">Left eye</strong><span id="left-label" class="affected">Right side dark</span></figcaption>
-          <div class="eye-frame"><canvas id="left" width="640" height="640" aria-labelledby="left-label" role="img"></canvas><i class="reticle" aria-hidden="true"></i></div>
+          <div class="eye-frame"><canvas id="left" width="640" height="640" aria-labelledby="left-label" role="img" aria-describedby="viewer-help"></canvas><i class="reticle" aria-hidden="true"></i></div>
           <div class="range-control">
             <div class="range-heading"><label for="left-blur" data-copy="leftBlur">Left eye blur</label><output id="left-blur-level" for="left-blur">2 / 5</output></div>
             <input id="left-blur" type="range" min="0" max="5" step="1" value="2">
@@ -65,7 +66,7 @@
         </figure>
         <figure>
           <figcaption><strong data-copy="rightEye">Right eye</strong><span id="right-label">Moderate blur</span></figcaption>
-          <div class="eye-frame"><canvas id="right" width="640" height="640" aria-labelledby="right-label" role="img"></canvas><i class="reticle" aria-hidden="true"></i></div>
+          <div class="eye-frame"><canvas id="right" width="640" height="640" aria-labelledby="right-label" role="img" aria-describedby="viewer-help"></canvas><i class="reticle" aria-hidden="true"></i></div>
           <div class="range-control">
             <div class="range-heading"><label for="right-blur" data-copy="rightBlur">Right eye blur</label><output id="right-blur-level" for="right-blur">2 / 5</output></div>
             <input id="right-blur" type="range" min="0" max="5" step="1" value="2">
