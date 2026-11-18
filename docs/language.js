@@ -2,6 +2,10 @@
 
 const marathiCopy = {
   brand: "आई",
+  cameraChoice: "कॅमेरा",
+  backCamera: "मागचा",
+  frontCamera: "पुढचा",
+  resetView: "मूळ दृश्य",
   accessibility: "वापरणं सोपं करा",
   keepControls: "नियंत्रणं दिसत राहू द्या",
   viewerHelp: "नियंत्रणं दाखवण्यासाठी किंवा लपवण्यासाठी चित्राला स्पर्श करा किंवा एंटर दाबा.",
@@ -57,6 +61,8 @@ const marathiCopy = {
 
 const localized = {
   en: {
+    viewReset: 'View reset.',
+    cameraFallback: 'Selected camera unavailable. Using the available camera.',
     cameraLaunch: 'Camera',
     showControls: 'Show controls',
     hideControls: 'Hide controls',
@@ -91,6 +97,8 @@ const localized = {
     cameraFailed: 'Couldn’t start the camera. Showing the illustrated scene.',
   },
   mr: {
+    viewReset: 'मूळ दृश्य पुन्हा लावलं.',
+    cameraFallback: 'निवडलेला कॅमेरा उपलब्ध नाही. उपलब्ध कॅमेरा वापरत आहोत.',
     cameraLaunch: 'कॅमेरा',
     showControls: 'नियंत्रणं दाखवा',
     hideControls: 'नियंत्रणं लपवा',

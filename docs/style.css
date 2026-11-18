@@ -474,3 +474,19 @@ body.viewer-expanded { overflow: hidden; }
   accent-color: var(--rust);
 }
 .check-control:focus-within { outline: 3px solid var(--rust); outline-offset: 3px; }
+
+.reset-settings { grid-column: 1 / -1; padding-top: 4px; }
+.viewer.is-expanded .viewer-heading h1 {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.viewer.is-expanded .viewer-actions { width: 100%; }
+.viewer.is-expanded:not(.controls-hidden) .eyes {
+  width: min(100%, calc(var(--eye-size, 240px) * 2 + var(--gutter)));
+}
+@media (orientation: landscape) {
+  .viewer.is-expanded .viewer-actions { justify-content: space-between; }
+}

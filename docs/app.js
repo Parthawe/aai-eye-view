@@ -98,6 +98,21 @@ function updateFullScreenLabel() {
   fullScreenButton.setAttribute('aria-pressed', String(expanded));
 }
 
+function fitEyeViews() {
+  if (!viewer.classList.contains('is-expanded') ||
+      viewer.classList.contains('controls-hidden')) return;
+  const headerHeight = viewer.querySelector('.viewer-heading').getBoundingClientRect().height;
+  const statusHeight = viewer.querySelector('.under-views').getBoundingClientRect().height;
+  const hintHeight = viewer.querySelector('.rotate-hint').getBoundingClientRect().height;
+  const captionHeight = Math.max(...eyes.map(eye =>
+    eye.canvas.closest('figure').querySelector('figcaption').getBoundingClientRect().height));
+  const padding = getComputedStyle(viewer);
+  const verticalPadding = parseFloat(padding.paddingTop) + parseFloat(padding.paddingBottom);
+  const size = Math.max(80, viewer.clientHeight - headerHeight - statusHeight - hintHeight -
+    captionHeight - verticalPadding - 12);
+  viewer.style.setProperty('--eye-size', size + 'px');
+}
+
 function restartControlsTimer() {
   clearTimeout(controlsHideTimer);
   if (keepControls.checked || adjustingWithPointer || !camera || pending ||
@@ -119,6 +134,7 @@ function setControlsHidden(hidden) {
     eyes[0].toggle.focus({ preventScroll: true });
   } else {
     restartControlsTimer();
+    fitEyeViews();
   }
 }
 
@@ -155,7 +171,11 @@ function setExpanded(expanded) {
 async function toggleFullScreen() {
   if (viewer.classList.contains('is-expanded')) {
     if (document.fullscreenElement === viewer) {
-      await document.exitFullscreen();
+      try {
+        await document.exitFullscreen();
+      } catch {
+        setControlsHidden(false);
+      }
     } else {
       setExpanded(false);
     }
@@ -212,6 +232,7 @@ function update() {
     eye.canvas.removeAttribute('aria-labelledby');
   }
   updateEyeControls();
+  fitEyeViews();
   render();
 }
 
@@ -310,9 +331,10 @@ async function toggleCamera() {
   pending = true;
   showCameraStatus('permission', 'cancelCamera');
   try {
+    const facing = document.querySelector('[name=facing]:checked').value;
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: false,
-      video: { facingMode: { ideal: 'environment' }, width: { ideal: 960 }, height: { ideal: 720 } },
+      video: { facingMode: { ideal: facing }, width: { ideal: 960 }, height: { ideal: 720 } },
     });
     if (attempt !== request) {
       stream.getTracks().forEach(track => track.stop());
@@ -329,7 +351,9 @@ async function toggleCamera() {
     await video.play();
     if (attempt !== request) return;
     pending = false;
-    showCameraStatus('liveCamera', 'stopCamera');
+    const actualFacing = stream.getVideoTracks()[0]?.getSettings().facingMode;
+    const usingFallback = actualFacing && actualFacing !== facing;
+    showCameraStatus(usingFallback ? 'cameraFallback' : 'liveCamera', 'stopCamera');
     tick();
     setControlsHidden(viewer.classList.contains('is-expanded') && !keepControls.checked);
   } catch (error) {
@@ -345,6 +369,12 @@ async function toggleCamera() {
 
 function changeLanguage(language) {
   applyLanguage(language);
+  try {
+    localStorage.setItem('aai-language', currentLanguage);
+  } catch {
+    // Language switching also works without browser storage.
+  }
+  document.querySelector('#settings-feedback').textContent = '';
   updateFullScreenLabel();
   const scene = scenes[currentLanguage];
   if (!scene.src) {
@@ -369,6 +399,20 @@ viewer.addEventListener('change', event => {
   }
   update();
   saveSettings();
+  if (event.target.name === 'facing' && (camera || pending)) {
+    stopCamera();
+    toggleCamera();
+  }
+});
+document.querySelector('#reset-view').addEventListener('click', () => {
+  for (const input of savedControls) {
+    if (input === keepControls || input.name === 'facing') continue;
+    if (input.type === 'range') input.value = input.defaultValue;
+    else input.checked = input.defaultChecked;
+  }
+  update();
+  saveSettings();
+  document.querySelector('#settings-feedback').textContent = localized[currentLanguage].viewReset;
 });
 spotSize.addEventListener('input', update);
 spotDarkness.addEventListener('input', update);
@@ -438,4 +482,20 @@ for (const toggle of languageButtons) {
   });
 }
 restoreSettings();
-changeLanguage(new URLSearchParams(location.search).get('lang'));
+let language = new URLSearchParams(location.search).get('lang');
+if (language !== 'en' && language !== 'mr') {
+  try {
+    language = localStorage.getItem('aai-language');
+  } catch {
+    language = 'en';
+  }
+}
+changeLanguage(language);
+
+const viewSizeObserver = new ResizeObserver(fitEyeViews);
+for (const element of [
+  viewer,
+  viewer.querySelector('.viewer-heading'),
+  viewer.querySelector('.under-views'),
+  viewer.querySelector('.rotate-hint'),
+]) viewSizeObserver.observe(element);
