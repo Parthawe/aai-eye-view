@@ -25,6 +25,7 @@ const stageInputs = document.querySelectorAll('[name=stage]');
 const eyes = ['left', 'right'].map(side => ({
   side,
   canvas: document.getElementById(side),
+  preview: document.getElementById(side + '-preview'),
   toggle: document.getElementById(side + '-toggle'),
   label: document.getElementById(side + '-label'),
   blur: document.getElementById(side + '-blur'),
@@ -281,6 +282,12 @@ function render() {
     eye.ctx.drawImage(base.canvas, 0, 0, SIZE, SIZE);
     if (eye.side === side && darkWidth > 0 && spotOpacity > 0) drawDarkArea(eye.ctx);
   }
+  if (adjustments.open) {
+    for (const eye of eyes) {
+      eye.preview.getContext('2d', { alpha: false }).drawImage(
+        eye.canvas, 0, 0, eye.preview.width, eye.preview.height);
+    }
+  }
 }
 
 function drawDarkArea(ctx) {
@@ -487,6 +494,7 @@ adjustButton.addEventListener('click', () => {
   viewer.classList.add('show-adjustments');
   adjustButton.setAttribute('aria-expanded', 'true');
   adjustments.showModal();
+  render();
 });
 closeAdjustmentsButton.addEventListener('click', () => adjustments.close());
 for (const helpButton of document.querySelectorAll('[data-open-help]')) {

@@ -7,9 +7,9 @@
   <meta name="description" content="A tribute to Mom and an interactive illustration of how vision can differ between two eyes.">
   <title>Aai | A view through two eyes</title>
   <link rel="icon" href="./mark.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="./style.css?v=help">
-  <script src="./language.js?v=help" defer></script>
-  <script src="./app.js?v=help" defer></script>
+  <link rel="stylesheet" href="./style.css?v=live-adjust">
+  <script src="./language.js?v=live-adjust" defer></script>
+  <script src="./app.js?v=live-adjust" defer></script>
 </head>
 <body>
   <header class="masthead wrap">
@@ -76,6 +76,16 @@
         <div class="adjust-panel-header">
           <h2 id="adjustments-title" data-copy="adjustTitle">Adjust the view</h2>
           <button id="close-adjustments" class="viewer-button primary" type="button" data-copy="done">Done</button>
+        </div>
+        <div class="adjust-preview" aria-hidden="true">
+          <figure>
+            <figcaption data-copy="leftEye">Left eye</figcaption>
+            <canvas id="left-preview" width="320" height="320"></canvas>
+          </figure>
+          <figure>
+            <figcaption data-copy="rightEye">Right eye</figcaption>
+            <canvas id="right-preview" width="320" height="320"></canvas>
+          </figure>
         </div>
         <div class="adjust-panel-body">
           <div class="blur-adjustments">
