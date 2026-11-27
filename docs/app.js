@@ -15,6 +15,9 @@ const helpDialog = document.querySelector('#help-dialog');
 let helpOpener;
 const stepButtons = document.querySelectorAll('[data-step-target]');
 const keepControls = document.querySelector('#keep-controls');
+const glassesToggle = document.querySelector('#glasses-toggle');
+const glassesState = document.querySelector('#glasses-state');
+const adjustmentTabs = [...document.querySelectorAll('.adjust-tabs [role=tab]')];
 const surroundingPage = document.querySelectorAll('.masthead, .camera-launch, .info-panel, .footer');
 const phoneLayout = matchMedia('(max-width: 760px), (pointer: coarse) and (max-width: 1050px)');
 const spotSize = document.querySelector('#spot-size');
@@ -58,12 +61,11 @@ let pending = false;
 let frameId = 0;
 let side, pattern, glasses, darkWidth, spotOpacity;
 let nativeFullscreen = false;
-let launchedFromStart = false;
 let controlsHideTimer;
 let adjustingWithPointer = false;
 let usingKeyboard = false;
 const CONTROLS_IDLE_MS = 5000;
-const savedControls = [...document.querySelectorAll('input[type=range], input[type=radio]:not([name=stage]), #keep-controls')];
+const savedControls = [...document.querySelectorAll('input[type=range], input[type=radio]:not([name=stage]), #keep-controls, #glasses-toggle')];
 
 function saveSettings() {
   const settings = {};
@@ -72,6 +74,7 @@ function saveSettings() {
     else if (input.type === 'range') settings[input.id] = input.value;
     else if (input.checked) settings[input.name] = input.value;
   }
+  settings.glasses = glassesToggle.checked ? 'on' : 'off';
   try {
     localStorage.setItem('aai-view-settings', JSON.stringify(settings));
   } catch {
@@ -83,7 +86,8 @@ function restoreSettings() {
   try {
     const settings = JSON.parse(localStorage.getItem('aai-view-settings')) || {};
     for (const input of savedControls) {
-      const value = settings[input.id || input.name];
+      let value = settings[input.id || input.name];
+      if (input === glassesToggle && typeof value !== 'boolean') value = settings.glasses === 'on';
       if (input.type === 'checkbox') {
         if (typeof value === 'boolean') input.checked = value;
       } else if (input.type === 'range') {
@@ -105,21 +109,6 @@ function updateFullScreenLabel() {
   fullScreenButton.setAttribute('aria-pressed', String(expanded));
 }
 
-function fitEyeViews() {
-  if (!viewer.classList.contains('is-expanded') ||
-      viewer.classList.contains('controls-hidden')) return;
-  const headerHeight = viewer.querySelector('.viewer-heading').getBoundingClientRect().height;
-  const statusHeight = viewer.querySelector('.under-views').getBoundingClientRect().height;
-  const hintHeight = viewer.querySelector('.rotate-hint').getBoundingClientRect().height;
-  const captionHeight = Math.max(...eyes.map(eye =>
-    eye.canvas.closest('figure').querySelector('figcaption').getBoundingClientRect().height));
-  const padding = getComputedStyle(viewer);
-  const verticalPadding = parseFloat(padding.paddingTop) + parseFloat(padding.paddingBottom);
-  const size = Math.max(80, viewer.clientHeight - headerHeight - statusHeight - hintHeight -
-    captionHeight - verticalPadding - 12);
-  viewer.style.setProperty('--eye-size', size + 'px');
-}
-
 function restartControlsTimer() {
   clearTimeout(controlsHideTimer);
   if (helpDialog.open || adjustments.open || keepControls.checked || adjustingWithPointer || !camera || pending ||
@@ -136,6 +125,7 @@ function setControlsHidden(hidden) {
   hidden = hidden && !adjustments.open && !helpDialog.open;
   clearTimeout(controlsHideTimer);
   viewer.classList.toggle('controls-hidden', hidden);
+  if (!hidden) measureDock();
   updateEyeControls();
   if (hidden) {
     viewer.classList.remove('show-adjustments');
@@ -143,7 +133,6 @@ function setControlsHidden(hidden) {
     eyes[0].toggle.focus({ preventScroll: true });
   } else {
     restartControlsTimer();
-    fitEyeViews();
   }
 }
 
@@ -169,8 +158,7 @@ function setExpanded(expanded) {
     if (adjustments.open) adjustments.close();
     viewer.classList.remove('show-adjustments');
     adjustButton.setAttribute('aria-expanded', 'false');
-    if (launchedFromStart || phoneLayout.matches) stopCamera();
-    launchedFromStart = false;
+    if (camera || pending) stopCamera();
   }
   updateFullScreenLabel();
   const focusTarget = !expanded && phoneLayout.matches ?
@@ -209,13 +197,15 @@ function showCameraStatus(nextStatus = cameraStatus, nextAction = cameraAction) 
   const words = localized[currentLanguage];
   buttonText.textContent = words[cameraAction];
   status.textContent = words[cameraStatus];
+  viewer.classList.toggle('camera-live', !!camera && !pending);
 }
 
 function update() {
   const words = localized[currentLanguage];
   side = document.querySelector('[name=side]:checked').value;
   pattern = document.querySelector('[name=pattern]:checked').value;
-  glasses = document.querySelector('[name=glasses]:checked').value === 'on';
+  glasses = glassesToggle.checked;
+  glassesState.textContent = glasses ? words.switchOn : words.switchOff;
   const size = spotSize.valueAsNumber;
   const darkness = spotDarkness.valueAsNumber;
   darkWidth = (size / 100) * SIZE;
@@ -250,7 +240,6 @@ function update() {
       input.valueAsNumber >= Number(input.max) : input.valueAsNumber <= Number(input.min);
   }
   updateEyeControls();
-  fitEyeViews();
   render();
 }
 
@@ -452,7 +441,6 @@ button.addEventListener('click', () => {
   toggleCamera();
 });
 document.querySelector('#start-camera').addEventListener('click', () => {
-  launchedFromStart = true;
   // Both permission requests must begin during the same tap.
   toggleFullScreen();
   toggleCamera();
@@ -558,10 +546,45 @@ if (language !== 'en' && language !== 'mr') {
 }
 changeLanguage(language);
 
-const viewSizeObserver = new ResizeObserver(fitEyeViews);
-for (const element of [
-  viewer,
-  viewer.querySelector('.viewer-heading'),
-  viewer.querySelector('.under-views'),
-  viewer.querySelector('.rotate-hint'),
-]) viewSizeObserver.observe(element);
+function selectAdjustmentTab(selected, focus = false) {
+  for (const tab of adjustmentTabs) {
+    const active = tab === selected;
+    tab.setAttribute('aria-selected', String(active));
+    tab.tabIndex = active ? 0 : -1;
+    document.getElementById(tab.getAttribute('aria-controls')).hidden = !active;
+  }
+  adjustments.querySelector('.adjust-panel-body').scrollTop = 0;
+  if (focus) selected.focus();
+}
+
+for (const tab of adjustmentTabs) {
+  tab.addEventListener('click', () => selectAdjustmentTab(tab));
+  tab.addEventListener('keydown', event => {
+    const index = adjustmentTabs.indexOf(tab);
+    let next;
+    if (event.key === 'ArrowRight') next = (index + 1) % adjustmentTabs.length;
+    if (event.key === 'ArrowLeft') next = (index + adjustmentTabs.length - 1) % adjustmentTabs.length;
+    if (event.key === 'Home') next = 0;
+    if (event.key === 'End') next = adjustmentTabs.length - 1;
+    if (next === undefined) return;
+    event.preventDefault();
+    selectAdjustmentTab(adjustmentTabs[next], true);
+  });
+}
+
+const textSizeObserver = new ResizeObserver(() => {
+  requestAnimationFrame(() => {
+    const largeText = parseFloat(getComputedStyle(document.body).fontSize) > 28;
+    adjustments.classList.toggle('large-text', largeText);
+  });
+});
+textSizeObserver.observe(adjustments.querySelector('.adjust-panel-header'));
+textSizeObserver.observe(adjustments.querySelector('.adjust-tabs'));
+
+function measureDock() {
+  const height = viewer.querySelector('.viewer-heading').getBoundingClientRect().height;
+  if (height > 0) viewer.style.setProperty('--dock-height', height + 'px');
+}
+
+const dockSizeObserver = new ResizeObserver(measureDock);
+dockSizeObserver.observe(viewer.querySelector('.viewer-heading'));

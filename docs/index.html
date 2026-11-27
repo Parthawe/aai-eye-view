@@ -7,9 +7,9 @@
   <meta name="description" content="A tribute to Mom and an interactive illustration of how vision can differ between two eyes.">
   <title>Aai | A view through two eyes</title>
   <link rel="icon" href="./mark.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="./style.css?v=live-adjust">
-  <script src="./language.js?v=live-adjust" defer></script>
-  <script src="./app.js?v=live-adjust" defer></script>
+  <link rel="stylesheet" href="./style.css?v=phone-flow">
+  <script src="./language.js?v=phone-flow" defer></script>
+  <script src="./app.js?v=phone-flow" defer></script>
 </head>
 <body>
   <header class="masthead wrap">
@@ -34,13 +34,13 @@
       <div class="viewer-heading">
         <h1 id="viewer-title" data-copy="viewerTitle">Through her eyes</h1>
         <div class="viewer-actions" id="viewer-controls">
-        <fieldset class="quick-glasses">
-          <legend data-copy="glasses">Glasses</legend>
-          <div class="segments">
-            <label><input type="radio" name="glasses" value="off" checked><span data-copy="off">Off</span></label>
-            <label><input type="radio" name="glasses" value="on"><span data-copy="on">On</span></label>
-          </div>
-        </fieldset>
+          <label class="glasses-switch" for="glasses-toggle">
+            <input id="glasses-toggle" type="checkbox" role="switch">
+            <span class="glasses-copy">
+              <span data-copy="glasses">Glasses</span>
+              <span id="glasses-state" aria-hidden="true">Off</span>
+            </span>
+          </label>
           <button id="camera" class="viewer-button primary" type="button" aria-describedby="camera-note">
             <svg width="19" height="16" viewBox="0 0 20 16" fill="none" aria-hidden="true"><rect x="1" y="3" width="12" height="10" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="m13 6 5-2v8l-5-2" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
             <span>Use my camera</span>
@@ -74,7 +74,7 @@
       </div>
       <dialog id="adjustments" class="adjust-panel" aria-labelledby="adjustments-title">
         <div class="adjust-panel-header">
-          <h2 id="adjustments-title" data-copy="adjustTitle">Adjust the view</h2>
+          <h2 id="adjustments-title" data-copy="adjustTitle">Adjust</h2>
           <button id="close-adjustments" class="viewer-button primary" type="button" data-copy="done">Done</button>
         </div>
         <div class="adjust-preview" aria-hidden="true">
@@ -87,7 +87,13 @@
             <canvas id="right-preview" width="320" height="320"></canvas>
           </figure>
         </div>
+        <div class="adjust-tabs" role="tablist" aria-label="Adjustment sections" data-label="adjustmentTabs">
+          <button id="blur-tab" type="button" role="tab" aria-controls="blur-settings" aria-selected="true" data-copy="blurTab">Blur</button>
+          <button id="dark-tab" type="button" role="tab" aria-controls="dark-settings" aria-selected="false" tabindex="-1" data-copy="darkTab">Dark area</button>
+          <button id="more-tab" type="button" role="tab" aria-controls="more-settings" aria-selected="false" tabindex="-1" data-copy="moreTab">More</button>
+        </div>
         <div class="adjust-panel-body">
+          <section id="blur-settings" role="tabpanel" aria-labelledby="blur-tab" tabindex="0">
           <div class="blur-adjustments">
             <div class="range-control">
               <div class="range-heading"><label for="left-blur" data-copy="leftBlur">Left eye blur</label><output id="left-blur-level" for="left-blur">2 / 5</output></div>
@@ -116,6 +122,8 @@
               <div class="range-scale" aria-hidden="true"><span data-copy="blurMin">0 Sharp</span><span data-copy="blurMax">5 No detail</span></div>
             </div>
           </div>
+          </section>
+          <section id="dark-settings" role="tabpanel" aria-labelledby="dark-tab" tabindex="0" hidden>
           <fieldset class="progression quick-presets" id="quick-presets">
             <legend class="sr-only" data-copy="progression">Effect presets</legend>
             <div class="segments">
@@ -153,6 +161,8 @@
               <div class="range-scale" aria-hidden="true"><span data-copy="spotDarknessMin">0% Clear</span><span data-copy="spotDarknessMax">100% Black</span></div>
             </div>
           </div>
+          </section>
+          <section id="more-settings" role="tabpanel" aria-labelledby="more-tab" tabindex="0" hidden>
           <div class="controls" id="advanced-controls">
             <fieldset>
               <legend data-copy="spotSide">Eye with the dark area</legend>
@@ -188,6 +198,7 @@
             </div>
           </div>
           <p class="view-note" data-copy="viewNote">An illustration based on her description.</p>
+          </section>
         </div>
       </dialog>
       <video id="video" muted playsinline hidden></video>
@@ -237,19 +248,19 @@
         </li>
         <li>
           <h3 data-copy="helpTapTitle">Tap either eye view</h3>
-          <p data-copy="helpTap">Controls should appear. After five idle seconds they hide again. Try Glasses On and Off. To read at your own pace, open Adjust and turn on Keep controls visible.</p>
+          <p data-copy="helpTap">Controls should appear. After five idle seconds they hide again. Try the Glasses switch. To read at your own pace, open Adjust, choose More, and turn on Keep controls visible.</p>
         </li>
         <li>
           <h3 data-copy="helpAdjustTitle">Adjust</h3>
-          <p data-copy="helpAdjust">Change blur, dark area width, and darkness with the sliders or + and − buttons. The values and image should change. The panel stays open while you use it.</p>
+          <p data-copy="helpAdjust">Choose Blur, Dark area, or More. Use the sliders or + and − buttons to change the view. The values and image should change. The panel stays open while you use it.</p>
         </li>
         <li>
           <h3 data-copy="helpDoneTitle">Done</h3>
           <p data-copy="helpDone">Tap Done to close Adjust. The camera should keep running. The right eye starts at 2/5 blur on a fresh visit. Your saved adjustments take priority.</p>
         </li>
         <li>
-          <h3 data-copy="helpExitTitle">Exit full screen</h3>
-          <p data-copy="helpExit">Tap an eye view, then Exit full screen. You should return to Start camera, and your phone’s camera indicator should turn off.</p>
+          <h3 data-copy="helpExitTitle">Close view</h3>
+          <p data-copy="helpExit">Tap an eye view, then Close view. You should return to Start camera, and your phone’s camera indicator should turn off.</p>
         </li>
       </ol>
       <p class="help-family" data-copy="helpFamily">Ask Mom what feels familiar and where it should look blurrier or darker.</p>
